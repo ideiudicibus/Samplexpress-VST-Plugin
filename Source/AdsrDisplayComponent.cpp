@@ -205,10 +205,10 @@ void AdsrDisplayComponent::paint (juce::Graphics& g)
 {
     auto bounds = getLocalBounds().toFloat().reduced (2.0f);
 
-    g.setColour (juce::Colour (bgColour));
+    g.setColour (juce::Colour (bgColour).withAlpha (panelAlpha));
     g.fillRect (bounds);
 
-    g.setColour (juce::Colour (outlineColour));
+    g.setColour (juce::Colour (outlineColour).withAlpha (panelAlpha + 0.3f));
     g.drawRect (bounds, 1.0f);
 
     auto graph = getGraphBounds();

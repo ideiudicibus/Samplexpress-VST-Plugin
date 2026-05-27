@@ -61,7 +61,11 @@ SamplexpressAudioProcessorEditor::SamplexpressAudioProcessorEditor (Samplexpress
     for (auto* s : { &filtCutoffSlider, &filtResonanceSlider })
         setupInvisibleSlider (*s);
 
-    // Interactive displays
+    // Spectrum — added first so it sits at the bottom of the z-stack
+    addAndMakeVisible (spectrumAnalyzer);
+    spectrumAnalyzer.prepare (processorRef.getSampleRate());
+
+    // Interactive displays — added after spectrum so they paint on top
     addAndMakeVisible (volAdsrDisplay);
     addAndMakeVisible (filtAdsrDisplay);
     addAndMakeVisible (pitchAdsrDisplay);
@@ -97,10 +101,6 @@ SamplexpressAudioProcessorEditor::SamplexpressAudioProcessorEditor (Samplexpress
         filtResonanceSlider.setValue (res, juce::sendNotificationSync);
     });
 
-    // Spectrum
-    addAndMakeVisible (spectrumAnalyzer);
-    spectrumAnalyzer.prepare (processorRef.getSampleRate());
-
     // Waveform + tabs
     addAndMakeVisible (waveformDisplay);
     addAndMakeVisible (tabBar);
@@ -129,15 +129,8 @@ SamplexpressAudioProcessorEditor::SamplexpressAudioProcessorEditor (Samplexpress
     addAndMakeVisible (tabAlphaSlider);
     tabAlphaSlider.onValueChange = [this] { updateTabAlpha(); };
 
-    // Make tab content non-opaque so spectrum shows through
-    volAdsrDisplay.setOpaque (false);
-    filtAdsrDisplay.setOpaque (false);
-    pitchAdsrDisplay.setOpaque (false);
-    filtResponseDisplay.setOpaque (false);
-    sampleInfoLabel.setOpaque (false);
-    presetComboBox.setOpaque (false);
-    savePresetButton.setOpaque (false);
-    deletePresetButton.setOpaque (false);
+    // Label background transparent so spectrum shows through
+    sampleInfoLabel.setColour (juce::Label::backgroundColourId, juce::Colours::transparentBlack);
 
     updateTabAlpha();
 
@@ -418,12 +411,8 @@ void SamplexpressAudioProcessorEditor::deletePresetClicked()
 void SamplexpressAudioProcessorEditor::updateTabAlpha()
 {
     auto alpha = static_cast<float> (tabAlphaSlider.getValue());
-    volAdsrDisplay.setAlpha (alpha);
-    filtAdsrDisplay.setAlpha (alpha);
-    pitchAdsrDisplay.setAlpha (alpha);
-    filtResponseDisplay.setAlpha (alpha);
-    sampleInfoLabel.setAlpha (alpha);
-    presetComboBox.setAlpha (alpha);
-    savePresetButton.setAlpha (alpha);
-    deletePresetButton.setAlpha (alpha);
+    volAdsrDisplay.setPanelAlpha (alpha);
+    filtAdsrDisplay.setPanelAlpha (alpha);
+    pitchAdsrDisplay.setPanelAlpha (alpha);
+    filtResponseDisplay.setPanelAlpha (alpha);
 }
