@@ -1,0 +1,42 @@
+# Build output
+build/
+Build/
+
+# IDE
+.vs/
+.vscode/
+*.user
+*.suo
+*.sln
+*.vcxproj*
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Binaries (built locally)
+*.obj
+*.o
+*.ilk
+*.pdb
+*.lib
+*.exp
+
+# JUCE generated
+JuceLibraryCode/
+
+# Plugin artifacts (rebuilt from source)
+Samplexpress_artefacts/
+
+# Temp files
+*.tmp
+*.bak
+*~
+
+# pluginval
+pluginval.exe
+pluginval.zip
+
+# Tool-specific directories
+.claude/
+.paul/

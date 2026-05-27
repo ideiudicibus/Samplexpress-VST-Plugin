@@ -1,0 +1,79 @@
+#pragma once
+
+#include "PluginProcessor.h"
+#include "SamplexpressLookAndFeel.h"
+#include "AdsrDisplayComponent.h"
+#include "FilterResponseComponent.h"
+#include "SpectrumAnalyzerComponent.h"
+#include "PresetManager.h"
+#include <juce_audio_processors/juce_audio_processors.h>
+
+class SamplexpressAudioProcessorEditor final : public juce::AudioProcessorEditor,
+                                               private juce::Timer,
+                                               public juce::FileDragAndDropTarget
+{
+public:
+    explicit SamplexpressAudioProcessorEditor (SamplexpressAudioProcessor&);
+    ~SamplexpressAudioProcessorEditor() override;
+
+    void paint (juce::Graphics& g) override;
+    void resized() override;
+
+private:
+    void timerCallback() override;
+    void loadButtonClicked();
+    void updateSampleInfo();
+
+    // FileDragAndDropTarget
+    bool isInterestedInFileDrag (const juce::StringArray& files) override;
+    void fileDragEnter (const juce::StringArray& files, int x, int y) override;
+    void fileDragExit (const juce::StringArray& files) override;
+    void filesDropped (const juce::StringArray& files, int x, int y) override;
+
+    SamplexpressAudioProcessor& processorRef;
+    SamplexpressLookAndFeel customLookAndFeel;
+
+    juce::Label titleLabel;
+    juce::TextButton loadButton;
+    juce::TextButton playButton;
+    juce::Label fileNameLabel;
+    juce::Label sampleInfoLabel;
+    std::unique_ptr<juce::FileChooser> fileChooser;
+    bool isDragOver{false};
+
+    // Invisible backing sliders for APVTS (ADSR parameters controlled by interactive displays)
+    juce::Slider volAttackSlider, volDecaySlider, volSustainSlider, volReleaseSlider;
+    juce::Slider filtAttackSlider, filtDecaySlider, filtSustainSlider, filtReleaseSlider;
+    juce::Slider pitchAttackSlider, pitchDecaySlider, pitchSustainSlider, pitchReleaseSlider;
+
+    // Visible filter knobs
+    juce::Slider filtCutoffSlider, filtResonanceSlider;
+
+    // Slider attachments (declared after sliders so they're destroyed first)
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> volAttackAttachment, volDecayAttachment, volSustainAttachment, volReleaseAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> filtAttackAttachment, filtDecayAttachment, filtSustainAttachment, filtReleaseAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> pitchAttackAttachment, pitchDecayAttachment, pitchSustainAttachment, pitchReleaseAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> filtCutoffAttachment, filtResonanceAttachment;
+
+    // Interactive ADSR graphic displays
+    AdsrDisplayComponent volAdsrDisplay, filtAdsrDisplay, pitchAdsrDisplay;
+
+    // Filter response display (replaces visible knobs)
+    FilterResponseComponent filtResponseDisplay;
+
+    // Spectrum analyzer
+    SpectrumAnalyzerComponent spectrumAnalyzer;
+
+    // Preset manager and UI
+    PresetManager presetManager;
+    juce::ComboBox presetComboBox;
+    juce::TextButton savePresetButton;
+    juce::TextButton deletePresetButton;
+
+    void refreshPresetList();
+    void savePresetClicked();
+    void deletePresetClicked();
+    void presetChanged();
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SamplexpressAudioProcessorEditor)
+};
