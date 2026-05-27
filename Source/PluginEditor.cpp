@@ -104,7 +104,7 @@ SamplexpressAudioProcessorEditor::SamplexpressAudioProcessorEditor (Samplexpress
     // Waveform + tabs
     addAndMakeVisible (waveformDisplay);
     addAndMakeVisible (tabBar);
-    tabBar.setTabNames ({ "SAMPLE", "VOLUME", "FILTER", "PITCH", "SPECTRUM" });
+    tabBar.setTabNames ({ "SAMPLE", "VOLUME", "FILTER", "PITCH" });
     tabBar.setTabChangedCallback ([this] (int idx) { switchToTab (idx); });
 
     // Preset UI
@@ -122,7 +122,7 @@ SamplexpressAudioProcessorEditor::SamplexpressAudioProcessorEditor (Samplexpress
 
     refreshPresetList();
 
-    switchToTab (1); // Default to VOLUME tab
+    tabBar.setCurrentTab (1); // Default to VOLUME tab
     startTimerHz (10);
 }
 
@@ -159,7 +159,7 @@ void SamplexpressAudioProcessorEditor::resized()
     bounds.removeFromTop (4);
 
     // Waveform
-    waveformDisplay.setBounds (bounds.removeFromTop (130));
+    waveformDisplay.setBounds (bounds.removeFromTop (110));
 
     bounds.removeFromTop (4);
 
@@ -168,12 +168,14 @@ void SamplexpressAudioProcessorEditor::resized()
 
     bounds.removeFromTop (4);
 
-    // Content area
-    auto content = bounds;
+    // Content area split into top controls + bottom spectrum
+    auto contentTop = bounds.removeFromTop (140);
+    bounds.removeFromTop (4);
+    auto spectrumArea = bounds;
 
     // Position all tab content (only active one is visible)
     {
-        auto sampleArea = content;
+        auto sampleArea = contentTop;
         sampleInfoLabel.setBounds (sampleArea.removeFromTop (20));
         auto presetBar = sampleArea.removeFromTop (26);
         presetComboBox.setBounds (presetBar.removeFromLeft (140));
@@ -183,17 +185,17 @@ void SamplexpressAudioProcessorEditor::resized()
         deletePresetButton.setBounds (presetBar.removeFromLeft (55));
     }
 
-    volAdsrDisplay.setBounds (content);
+    volAdsrDisplay.setBounds (contentTop);
 
     {
-        auto filterArea = content;
-        filtResponseDisplay.setBounds (filterArea.removeFromTop (content.getHeight() / 2));
+        auto filterArea = contentTop;
+        filtResponseDisplay.setBounds (filterArea.removeFromTop (contentTop.getHeight() / 2));
         filterArea.removeFromTop (2);
         filtAdsrDisplay.setBounds (filterArea);
     }
 
-    pitchAdsrDisplay.setBounds (content);
-    spectrumAnalyzer.setBounds (content);
+    pitchAdsrDisplay.setBounds (contentTop);
+    spectrumAnalyzer.setBounds (spectrumArea);
 }
 
 void SamplexpressAudioProcessorEditor::switchToTab (int tabIndex)
@@ -206,7 +208,7 @@ void SamplexpressAudioProcessorEditor::switchToTab (int tabIndex)
     filtResponseDisplay.setVisible (false);
     filtAdsrDisplay.setVisible (false);
     pitchAdsrDisplay.setVisible (false);
-    spectrumAnalyzer.setVisible (false);
+    // spectrumAnalyzer stays visible on every tab
 
     switch (tabIndex)
     {
@@ -225,9 +227,6 @@ void SamplexpressAudioProcessorEditor::switchToTab (int tabIndex)
             break;
         case 3:
             pitchAdsrDisplay.setVisible (true);
-            break;
-        case 4:
-            spectrumAnalyzer.setVisible (true);
             break;
     }
 }
