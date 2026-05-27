@@ -67,7 +67,9 @@ private:
     juce::ComboBox presetComboBox;
     juce::TextButton savePresetButton;
     juce::TextButton deletePresetButton;
+    juce::Slider tabAlphaSlider;
 
+    void updateTabAlpha();
     void refreshPresetList();
     void savePresetClicked();
     void deletePresetClicked();

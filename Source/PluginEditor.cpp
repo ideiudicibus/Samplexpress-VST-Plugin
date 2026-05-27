@@ -120,6 +120,27 @@ SamplexpressAudioProcessorEditor::SamplexpressAudioProcessorEditor (Samplexpress
     deletePresetButton.onClick = [this] { deletePresetClicked(); };
     addAndMakeVisible (deletePresetButton);
 
+    // Tab transparency knob
+    tabAlphaSlider.setSliderStyle (juce::Slider::Rotary);
+    tabAlphaSlider.setTextBoxStyle (juce::Slider::NoTextBox, false, 0, 0);
+    tabAlphaSlider.setRange (0.1, 1.0, 0.01);
+    tabAlphaSlider.setValue (0.2, juce::dontSendNotification);
+    tabAlphaSlider.setTooltip ("Tab content opacity");
+    addAndMakeVisible (tabAlphaSlider);
+    tabAlphaSlider.onValueChange = [this] { updateTabAlpha(); };
+
+    // Make tab content non-opaque so spectrum shows through
+    volAdsrDisplay.setOpaque (false);
+    filtAdsrDisplay.setOpaque (false);
+    pitchAdsrDisplay.setOpaque (false);
+    filtResponseDisplay.setOpaque (false);
+    sampleInfoLabel.setOpaque (false);
+    presetComboBox.setOpaque (false);
+    savePresetButton.setOpaque (false);
+    deletePresetButton.setOpaque (false);
+
+    updateTabAlpha();
+
     refreshPresetList();
 
     tabBar.setCurrentTab (1); // Default to VOLUME tab
@@ -147,7 +168,9 @@ void SamplexpressAudioProcessorEditor::resized()
     auto bounds = getLocalBounds().reduced (16);
 
     // Title bar
-    auto titleBar = bounds.removeFromTop (24);
+    auto titleBar = bounds.removeFromTop (28);
+    tabAlphaSlider.setBounds (titleBar.removeFromLeft (26));
+    titleBar.removeFromLeft (6);
     titleLabel.setBounds (titleBar.removeFromLeft (110));
     titleBar.removeFromLeft (12);
     loadButton.setBounds (titleBar.removeFromLeft (55));
@@ -168,14 +191,12 @@ void SamplexpressAudioProcessorEditor::resized()
 
     bounds.removeFromTop (4);
 
-    // Content area split into top controls + bottom spectrum
-    auto contentTop = bounds.removeFromTop (140);
-    bounds.removeFromTop (4);
-    auto spectrumArea = bounds;
+    // Content area — spectrum behind, tab controls on top
+    auto content = bounds;
 
     // Position all tab content (only active one is visible)
     {
-        auto sampleArea = contentTop;
+        auto sampleArea = content;
         sampleInfoLabel.setBounds (sampleArea.removeFromTop (20));
         auto presetBar = sampleArea.removeFromTop (26);
         presetComboBox.setBounds (presetBar.removeFromLeft (140));
@@ -185,17 +206,17 @@ void SamplexpressAudioProcessorEditor::resized()
         deletePresetButton.setBounds (presetBar.removeFromLeft (55));
     }
 
-    volAdsrDisplay.setBounds (contentTop);
+    volAdsrDisplay.setBounds (content);
 
     {
-        auto filterArea = contentTop;
-        filtResponseDisplay.setBounds (filterArea.removeFromTop (contentTop.getHeight() / 2));
+        auto filterArea = content;
+        filtResponseDisplay.setBounds (filterArea.removeFromTop (content.getHeight() / 2));
         filterArea.removeFromTop (2);
         filtAdsrDisplay.setBounds (filterArea);
     }
 
-    pitchAdsrDisplay.setBounds (contentTop);
-    spectrumAnalyzer.setBounds (spectrumArea);
+    pitchAdsrDisplay.setBounds (content);
+    spectrumAnalyzer.setBounds (content);
 }
 
 void SamplexpressAudioProcessorEditor::switchToTab (int tabIndex)
@@ -392,4 +413,17 @@ void SamplexpressAudioProcessorEditor::deletePresetClicked()
 
     if (presetManager.deletePreset (name))
         refreshPresetList();
+}
+
+void SamplexpressAudioProcessorEditor::updateTabAlpha()
+{
+    auto alpha = static_cast<float> (tabAlphaSlider.getValue());
+    volAdsrDisplay.setAlpha (alpha);
+    filtAdsrDisplay.setAlpha (alpha);
+    pitchAdsrDisplay.setAlpha (alpha);
+    filtResponseDisplay.setAlpha (alpha);
+    sampleInfoLabel.setAlpha (alpha);
+    presetComboBox.setAlpha (alpha);
+    savePresetButton.setAlpha (alpha);
+    deletePresetButton.setAlpha (alpha);
 }
