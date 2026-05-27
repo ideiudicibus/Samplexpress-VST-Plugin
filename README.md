@@ -5,20 +5,23 @@ A JUCE-based sample player plugin inspired by Ableton Simpler's Classic Mode. Lo
 ## Features
 
 - **Sample Loading** — Load WAV/MP3/AIFF via file browser or drag-and-drop onto the plugin window
+- **Waveform Display** — Large orange waveform visualization of the loaded sample at the top of the UI
+- **Tab-Based Layout** — Clean, organized sections: SAMPLE, VOLUME, FILTER, and PITCH
 - **Polyphonic Playback** — 16-voice polyphony with pitch-shifting across the full keyboard range
 - **ADSR Envelopes** — Three independent envelopes for Volume, Filter Cutoff, and Pitch modulation
 - **Low-Pass Filter** — State-variable TPT filter with cutoff and resonance controls
-- **Spectrum Analyzer** — Real-time FFT display with frequency and dB axes
+- **Spectrum Analyzer** — Real-time FFT display visible behind every tab so you can see the frequency content while adjusting parameters
+- **Transparency Knob** — Top-left rotary knob adjusts how much the spectrum shows through the tab content
 - **Presets** — Save, load, and delete named presets
 - **Standalone + VST3** — Runs as a standalone app or VST3 plugin in your DAW
 
 ## Screenshots
 
 ![Main UI](docs/screenshot_main.png)
-*Main interface: sample info, ADSR displays, filter response, preset controls*
+*Main interface: waveform display, tab bar, ADSR displays, and filter response with spectrum behind*
 
 ![Spectrum Analyzer](docs/screenshot_spectrum.png)
-*Real-time spectrum analyzer with frequency (Hz) and amplitude (dB) axes*
+*Real-time spectrum analyzer visible behind tab content with frequency (Hz) and amplitude (dB) axes*
 
 ## Build Requirements
 
@@ -80,34 +83,38 @@ No administrator privileges required.
 ## Tutorial
 
 ### 1. Load a Sample
-Click **Load** and select a WAV or MP3 file, or drag-and-drop a file onto the plugin window.
+Click **Load** and select a WAV or MP3 file, or drag-and-drop a file onto the plugin window. The waveform display at the top shows the loaded sample immediately.
 
 ### 2. Play the Sample
-- **Standalone:** Press keys on your computer keyboard (QWERTY mapped to notes)
+- **Standalone:** Press keys on your computer keyboard (QWERTY mapped to notes) *(coming in v0.2)*
 - **VST3:** Send MIDI from your DAW
 
 ### 3. Shape the Sound
-Click and drag on the ADSR displays to adjust envelope parameters:
-- **Volume ADSR** — Controls loudness over time
-- **Filter ADSR** — Modulates the low-pass filter cutoff
-- **Pitch ADSR** — Adds pitch variation (set Sustain to 1.0 for no effect)
+Click the tabs to switch between sections. The spectrum analyzer is always visible in the background so you can see how your adjustments affect the sound:
 
-Drag the **filter response curve** to adjust cutoff and resonance.
+- **VOLUME tab** — Click and drag on the ADSR display to adjust the loudness envelope over time
+- **FILTER tab** — Drag the filter response curve to set cutoff and resonance; the Filter ADSR shapes how the filter opens and closes
+- **PITCH tab** — Adjust the Pitch ADSR to add pitch variation (set Sustain to 1.0 for no effect)
+- **SAMPLE tab** — View sample info and manage presets
+
+Use the small rotary knob in the **top-left corner** to adjust tab transparency — turn it down to see more spectrum, up for more opaque controls.
 
 ### 4. Save a Preset
-Choose a preset from the dropdown, or click **Save** to store your current settings. Click **Delete** to remove a preset.
+Switch to the **SAMPLE** tab, choose a preset from the dropdown, or click **Save** to store your current settings. Click **Delete** to remove a preset.
 
 ### 5. Watch the Spectrum
-The spectrum analyzer shows the frequency content of your sound in real time — frequency (Hz) on the X-axis, amplitude (dB) on the Y-axis.
+The spectrum analyzer shows the frequency content of your sound in real time behind every tab — frequency (Hz) on the X-axis, amplitude (dB) on the Y-axis.
 
 ## Project Structure
 
 ```
 Source/
   PluginProcessor.cpp/h           — Audio engine, sample playback, ADSR
-  PluginEditor.cpp/h              — UI layout, component wiring
+  PluginEditor.cpp/h              — UI layout, component wiring, tab switching
   SamplexpressVoice.cpp/h         — Per-voice sample rendering
   SamplexpressLookAndFeel.cpp/h   — Custom JUCE LookAndFeel_V4 subclass
+  WaveformDisplay.cpp/h           — Orange sample waveform visualization
+  TabBar.cpp/h                    — Horizontal tab bar with orange active indicator
   SpectrumAnalyzerComponent.cpp/h — FFT spectrum display
   FilterResponseComponent.cpp/h   — Interactive filter curve
   AdsrDisplayComponent.cpp/h      — Interactive ADSR graphs
