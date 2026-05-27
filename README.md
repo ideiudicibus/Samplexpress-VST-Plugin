@@ -18,10 +18,10 @@ A JUCE-based sample player plugin inspired by Ableton Simpler's Classic Mode. Lo
 ## Screenshots
 
 ![Main UI](docs/screenshot_main.png)
-*Main interface: waveform display, tab bar, ADSR displays, and filter response with spectrum behind*
+*Main interface: orange waveform display, tab bar, and active FILTER tab with filter response curve. The spectrum analyzer is visible in the background.*
 
 ![Spectrum Analyzer](docs/screenshot_spectrum.png)
-*Real-time spectrum analyzer visible behind tab content with frequency (Hz) and amplitude (dB) axes*
+*Spectrum analyzer visible behind tab content, showing real-time frequency content as you shape the sound.*
 
 ## Build Requirements
 
