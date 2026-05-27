@@ -1,14 +1,14 @@
 #include "PluginEditor.h"
 
 SamplexpressAudioProcessorEditor::SamplexpressAudioProcessorEditor (SamplexpressAudioProcessor& p)
-    : AudioProcessorEditor (&p), processorRef (p), spectrumAnalyzer (p)
+    : AudioProcessorEditor (&p), processorRef (p), spectrumAnalyzer (p), waveformDisplay (p)
 {
-    setSize (600, 500);
+    setSize (600, 440);
     setLookAndFeel (&customLookAndFeel);
 
     titleLabel.setText ("Samplexpress", juce::dontSendNotification);
-    titleLabel.setJustificationType (juce::Justification::centred);
-    titleLabel.setFont (juce::Font (juce::FontOptions { 16.0f, juce::Font::bold }));
+    titleLabel.setJustificationType (juce::Justification::left);
+    titleLabel.setFont (juce::Font (juce::FontOptions { 14.0f, juce::Font::bold }));
     addAndMakeVisible (titleLabel);
 
     loadButton.setButtonText ("Load");
@@ -19,7 +19,8 @@ SamplexpressAudioProcessorEditor::SamplexpressAudioProcessorEditor (Samplexpress
     playButton.onClick = [this] { processorRef.previewPlayRequested.store (true); };
     addAndMakeVisible (playButton);
 
-    fileNameLabel.setText ("No sample loaded", juce::dontSendNotification);
+    fileNameLabel.setText ("", juce::dontSendNotification);
+    fileNameLabel.setFont (juce::Font (juce::FontOptions { 11.0f }));
     addAndMakeVisible (fileNameLabel);
 
     sampleInfoLabel.setText ("", juce::dontSendNotification);
@@ -32,7 +33,6 @@ SamplexpressAudioProcessorEditor::SamplexpressAudioProcessorEditor (Samplexpress
     {
         slider.setSliderStyle (juce::Slider::Rotary);
         slider.setTextBoxStyle (juce::Slider::NoTextBox, false, 0, 0);
-        // invisible — not added to component tree
     };
 
     for (auto* s : { &volAttackSlider, &volDecaySlider, &volSustainSlider, &volReleaseSlider,
@@ -40,7 +40,6 @@ SamplexpressAudioProcessorEditor::SamplexpressAudioProcessorEditor (Samplexpress
                      &pitchAttackSlider, &pitchDecaySlider, &pitchSustainSlider, &pitchReleaseSlider })
         setupInvisibleSlider (*s);
 
-    // Attachments
     volAttackAttachment  = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment> (apvts, "vol_attack",  volAttackSlider);
     volDecayAttachment   = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment> (apvts, "vol_decay",   volDecaySlider);
     volSustainAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment> (apvts, "vol_sustain", volSustainSlider);
@@ -59,20 +58,15 @@ SamplexpressAudioProcessorEditor::SamplexpressAudioProcessorEditor (Samplexpress
     filtCutoffAttachment    = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment> (apvts, "filt_cutoff",    filtCutoffSlider);
     filtResonanceAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment> (apvts, "filt_resonance", filtResonanceSlider);
 
+    for (auto* s : { &filtCutoffSlider, &filtResonanceSlider })
+        setupInvisibleSlider (*s);
+
     // Interactive displays
     addAndMakeVisible (volAdsrDisplay);
     addAndMakeVisible (filtAdsrDisplay);
     addAndMakeVisible (pitchAdsrDisplay);
-
-    // Filter response display
     addAndMakeVisible (filtResponseDisplay);
-    filtResponseDisplay.setValueChangedCallback ([this] (float cut, float res)
-    {
-        filtCutoffSlider.setValue    (cut, juce::sendNotificationSync);
-        filtResonanceSlider.setValue (res, juce::sendNotificationSync);
-    });
 
-    // Callbacks: display drag → update invisible sliders → APVTS
     volAdsrDisplay.setValueChangedCallback ([this] (float a, float d, float s, float r)
     {
         volAttackSlider.setValue  (a, juce::sendNotificationSync);
@@ -97,13 +91,21 @@ SamplexpressAudioProcessorEditor::SamplexpressAudioProcessorEditor (Samplexpress
         pitchReleaseSlider.setValue (r, juce::sendNotificationSync);
     });
 
-    // Make filter sliders invisible (still wired to APVTS)
-    for (auto* s : { &filtCutoffSlider, &filtResonanceSlider })
-        setupInvisibleSlider (*s);
+    filtResponseDisplay.setValueChangedCallback ([this] (float cut, float res)
+    {
+        filtCutoffSlider.setValue    (cut, juce::sendNotificationSync);
+        filtResonanceSlider.setValue (res, juce::sendNotificationSync);
+    });
 
-    // Spectrum analyzer
+    // Spectrum
     addAndMakeVisible (spectrumAnalyzer);
     spectrumAnalyzer.prepare (processorRef.getSampleRate());
+
+    // Waveform + tabs
+    addAndMakeVisible (waveformDisplay);
+    addAndMakeVisible (tabBar);
+    tabBar.setTabNames ({ "SAMPLE", "VOLUME", "FILTER", "PITCH", "SPECTRUM" });
+    tabBar.setTabChangedCallback ([this] (int idx) { switchToTab (idx); });
 
     // Preset UI
     presetComboBox.setTextWhenNothingSelected ("Select preset...");
@@ -120,6 +122,7 @@ SamplexpressAudioProcessorEditor::SamplexpressAudioProcessorEditor (Samplexpress
 
     refreshPresetList();
 
+    switchToTab (1); // Default to VOLUME tab
     startTimerHz (10);
 }
 
@@ -143,47 +146,89 @@ void SamplexpressAudioProcessorEditor::resized()
 {
     auto bounds = getLocalBounds().reduced (16);
 
-    titleLabel.setBounds (bounds.removeFromTop (24));
+    // Title bar
+    auto titleBar = bounds.removeFromTop (24);
+    titleLabel.setBounds (titleBar.removeFromLeft (110));
+    titleBar.removeFromLeft (12);
+    loadButton.setBounds (titleBar.removeFromLeft (55));
+    titleBar.removeFromLeft (4);
+    playButton.setBounds (titleBar.removeFromLeft (55));
+    titleBar.removeFromLeft (8);
+    fileNameLabel.setBounds (titleBar);
 
-    auto ctrlBar = bounds.removeFromTop (30);
-    loadButton.setBounds (ctrlBar.removeFromLeft (70));
-    ctrlBar.removeFromLeft (8);
-    playButton.setBounds (ctrlBar.removeFromLeft (70));
-    ctrlBar.removeFromLeft (8);
-    presetComboBox.setBounds (ctrlBar.removeFromLeft (120));
-    ctrlBar.removeFromLeft (4);
-    savePresetButton.setBounds (ctrlBar.removeFromLeft (50));
-    ctrlBar.removeFromLeft (4);
-    deletePresetButton.setBounds (ctrlBar.removeFromLeft (50));
-    ctrlBar.removeFromLeft (8);
-    fileNameLabel.setBounds (ctrlBar);
+    bounds.removeFromTop (4);
 
-    auto infoRow = bounds.removeFromTop (18);
-    sampleInfoLabel.setBounds (infoRow);
+    // Waveform
+    waveformDisplay.setBounds (bounds.removeFromTop (130));
 
-    // Volume ADSR
+    bounds.removeFromTop (4);
+
+    // Tab bar
+    tabBar.setBounds (bounds.removeFromTop (28));
+
+    bounds.removeFromTop (4);
+
+    // Content area
+    auto content = bounds;
+
+    // Position all tab content (only active one is visible)
     {
-        auto area = bounds.removeFromTop (64);
-        volAdsrDisplay.setBounds (area);
+        auto sampleArea = content;
+        sampleInfoLabel.setBounds (sampleArea.removeFromTop (20));
+        auto presetBar = sampleArea.removeFromTop (26);
+        presetComboBox.setBounds (presetBar.removeFromLeft (140));
+        presetBar.removeFromLeft (6);
+        savePresetButton.setBounds (presetBar.removeFromLeft (55));
+        presetBar.removeFromLeft (4);
+        deletePresetButton.setBounds (presetBar.removeFromLeft (55));
     }
 
-    // Filter: response curve + ADSR display
+    volAdsrDisplay.setBounds (content);
+
     {
-        auto area = bounds.removeFromTop (136);
-        filtResponseDisplay.setBounds (area.removeFromTop (70));
-        filtAdsrDisplay.setBounds (area);
+        auto filterArea = content;
+        filtResponseDisplay.setBounds (filterArea.removeFromTop (content.getHeight() / 2));
+        filterArea.removeFromTop (2);
+        filtAdsrDisplay.setBounds (filterArea);
     }
 
-    // Pitch ADSR
-    {
-        auto area = bounds.removeFromTop (64);
-        pitchAdsrDisplay.setBounds (area);
-    }
+    pitchAdsrDisplay.setBounds (content);
+    spectrumAnalyzer.setBounds (content);
+}
 
-    // Spectrum analyzer
+void SamplexpressAudioProcessorEditor::switchToTab (int tabIndex)
+{
+    sampleInfoLabel.setVisible (false);
+    presetComboBox.setVisible (false);
+    savePresetButton.setVisible (false);
+    deletePresetButton.setVisible (false);
+    volAdsrDisplay.setVisible (false);
+    filtResponseDisplay.setVisible (false);
+    filtAdsrDisplay.setVisible (false);
+    pitchAdsrDisplay.setVisible (false);
+    spectrumAnalyzer.setVisible (false);
+
+    switch (tabIndex)
     {
-        auto area = bounds.removeFromTop (120);
-        spectrumAnalyzer.setBounds (area);
+        case 0:
+            sampleInfoLabel.setVisible (true);
+            presetComboBox.setVisible (true);
+            savePresetButton.setVisible (true);
+            deletePresetButton.setVisible (true);
+            break;
+        case 1:
+            volAdsrDisplay.setVisible (true);
+            break;
+        case 2:
+            filtResponseDisplay.setVisible (true);
+            filtAdsrDisplay.setVisible (true);
+            break;
+        case 3:
+            pitchAdsrDisplay.setVisible (true);
+            break;
+        case 4:
+            spectrumAnalyzer.setVisible (true);
+            break;
     }
 }
 
@@ -305,8 +350,7 @@ void SamplexpressAudioProcessorEditor::refreshPresetList()
 void SamplexpressAudioProcessorEditor::presetChanged()
 {
     auto name = presetComboBox.getText();
-    if (name.isEmpty())
-        return;
+    if (name.isEmpty()) return;
 
     juce::MemoryBlock stateData;
     if (presetManager.loadPreset (name, stateData))
@@ -345,8 +389,7 @@ void SamplexpressAudioProcessorEditor::savePresetClicked()
 void SamplexpressAudioProcessorEditor::deletePresetClicked()
 {
     auto name = presetComboBox.getText();
-    if (name.isEmpty())
-        return;
+    if (name.isEmpty()) return;
 
     if (presetManager.deletePreset (name))
         refreshPresetList();

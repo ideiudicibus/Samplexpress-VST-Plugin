@@ -27,4 +27,6 @@ private:
     static constexpr auto knobPointerColour= 0xFFE0E0E5;
     static constexpr auto textColour       = 0xFFC0C0C8;
     static constexpr auto buttonBgColour   = 0xFF222228;
+    static constexpr auto accentOrangeColour = 0xFFFFAA33;
+    static constexpr auto accentOrangeBright = 0xFFFFCC66;
 };

@@ -5,6 +5,8 @@
 #include "AdsrDisplayComponent.h"
 #include "FilterResponseComponent.h"
 #include "SpectrumAnalyzerComponent.h"
+#include "WaveformDisplay.h"
+#include "TabBar.h"
 #include "PresetManager.h"
 #include <juce_audio_processors/juce_audio_processors.h>
 
@@ -23,6 +25,7 @@ private:
     void timerCallback() override;
     void loadButtonClicked();
     void updateSampleInfo();
+    void switchToTab (int tabIndex);
 
     // FileDragAndDropTarget
     bool isInterestedInFileDrag (const juce::StringArray& files) override;
@@ -41,30 +44,25 @@ private:
     std::unique_ptr<juce::FileChooser> fileChooser;
     bool isDragOver{false};
 
-    // Invisible backing sliders for APVTS (ADSR parameters controlled by interactive displays)
+    // Invisible backing sliders for APVTS
     juce::Slider volAttackSlider, volDecaySlider, volSustainSlider, volReleaseSlider;
     juce::Slider filtAttackSlider, filtDecaySlider, filtSustainSlider, filtReleaseSlider;
     juce::Slider pitchAttackSlider, pitchDecaySlider, pitchSustainSlider, pitchReleaseSlider;
-
-    // Visible filter knobs
     juce::Slider filtCutoffSlider, filtResonanceSlider;
 
-    // Slider attachments (declared after sliders so they're destroyed first)
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> volAttackAttachment, volDecayAttachment, volSustainAttachment, volReleaseAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> filtAttackAttachment, filtDecayAttachment, filtSustainAttachment, filtReleaseAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> pitchAttackAttachment, pitchDecayAttachment, pitchSustainAttachment, pitchReleaseAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> filtCutoffAttachment, filtResonanceAttachment;
 
-    // Interactive ADSR graphic displays
+    // Interactive displays
     AdsrDisplayComponent volAdsrDisplay, filtAdsrDisplay, pitchAdsrDisplay;
-
-    // Filter response display (replaces visible knobs)
     FilterResponseComponent filtResponseDisplay;
-
-    // Spectrum analyzer
     SpectrumAnalyzerComponent spectrumAnalyzer;
+    WaveformDisplay waveformDisplay;
+    TabBar tabBar;
 
-    // Preset manager and UI
+    // Preset UI
     PresetManager presetManager;
     juce::ComboBox presetComboBox;
     juce::TextButton savePresetButton;

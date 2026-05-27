@@ -31,6 +31,8 @@ target_sources(Samplexpress
         Source/FilterResponseComponent.cpp
         Source/SpectrumAnalyzerComponent.cpp
         Source/PresetManager.cpp
+        Source/WaveformDisplay.cpp
+        Source/TabBar.cpp
 )
 
 target_compile_definitions(Samplexpress
