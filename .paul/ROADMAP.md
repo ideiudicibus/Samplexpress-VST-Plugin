@@ -154,7 +154,7 @@ Phases: 4 of 6 complete
 - Real-time rendering pipeline: sequencer advance → channel render → plugin stack → mixer
 
 **Plans:**
-- [ ] 06-01: Sample looping — loop points, crossfade, waveform UI
+- [ ] 06-01: Sample looping — loop points, crossfade, waveform UI (PLAN created)
 - [ ] 06-02: Audio engine improvements — cubic interpolation, exponential cutoff
 - [ ] 06-03: Preset system — save/load/browse/delete presets
 

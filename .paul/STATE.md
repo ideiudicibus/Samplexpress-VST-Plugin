@@ -11,9 +11,9 @@ See: .paul/PROJECT.md (updated 2026-05-24)
 
 Milestone: v0.1 Initial Release (v0.1.0)
 Phase: 6 of 6 (Preset System & Audio Engine — Loop Playback Focus)
-Plan: Entering planning
-Status: Ready to plan — giada codebase mapped for best practices
-Last activity: 2026-05-28 — codebase map of giada completed; Phase 6 scoped for loop playback
+Plan: 06-01 created, awaiting approval
+Status: PLAN created, ready for APPLY
+Last activity: 2026-05-28 — 06-01 PLAN.md created (loop parameters, voice crossfade, waveform markers, UI wiring)
 
 Progress:
 - Milestone: [████████░░] 80%
@@ -22,14 +22,14 @@ Progress:
 - Phase 3: [██████████] 100% Complete
 - Phase 4: [██████████] 100% Complete
 - Phase 5: [██████░░░░] 60% In Progress (4/4 ad-hoc plans complete; original QWERTY still deferred)
-- Phase 6: [░░░░░░░░░░] 0% Not started
+- Phase 6: [░░░░░░░░░░] 0% Planning
 
 ## Loop Position
 
 Current loop state:
 ```
 PLAN ──▶ APPLY ──▶ UNIFY
-  ○        ○        ○     [Ready for Phase 6 PLAN]
+  ✓        ○        ○     [Plan created, awaiting approval]
 ```
 
 ## Accumulated Context
