@@ -36,6 +36,11 @@ SamplexpressVoice::SamplexpressVoice (juce::AudioProcessorValueTreeState& apvts)
     pitchReleaseParam = apvts.getRawParameterValue ("pitch_release");
     filtCutoffParam    = apvts.getRawParameterValue ("filt_cutoff");
     filtResonanceParam = apvts.getRawParameterValue ("filt_resonance");
+
+    loopEnableParam  = apvts.getRawParameterValue ("loop_enable");
+    loopStartParam   = apvts.getRawParameterValue ("loop_start");
+    loopEndParam     = apvts.getRawParameterValue ("loop_end");
+    crossfadeMsParam = apvts.getRawParameterValue ("crossfade_ms");
 }
 
 void SamplexpressVoice::updateAdsrParameters()
@@ -87,6 +92,24 @@ void SamplexpressVoice::startNote (int midiNoteNumber, float velocity, juce::Syn
 
     velocityGain = velocity * 0.7f;
     sourceSamplePosition = 0.0;
+
+    // Cache loop parameters
+    loopEnabled = loopEnableParam != nullptr && loopEnableParam->load() > 0.5f;
+    if (loopEnabled && s->sampleBuffer != nullptr)
+    {
+        int totalSamples = s->sampleBuffer->getNumSamples();
+        float startNorm = loopStartParam != nullptr ? loopStartParam->load() : 0.0f;
+        float endNorm   = loopEndParam   != nullptr ? loopEndParam->load()   : 1.0f;
+        loopStartSample = juce::jlimit (0, totalSamples - 1, static_cast<int> (startNorm * totalSamples));
+        loopEndSample   = juce::jlimit (0, totalSamples - 1, static_cast<int> (endNorm   * totalSamples));
+        if (loopEndSample <= loopStartSample)
+            loopEndSample = totalSamples - 1;
+        float cfMs = crossfadeMsParam != nullptr ? crossfadeMsParam->load() : 20.0f;
+        crossfadeSamples = juce::jlimit (0, (loopEndSample - loopStartSample) / 2,
+                                          static_cast<int> (cfMs * 0.001f * getSampleRate()));
+        inCrossfade = false;
+        crossfadePosition = 0.0;
+    }
 
     volumeAdsr.setSampleRate (getSampleRate());
     filterAdsr.setSampleRate (getSampleRate());
@@ -166,10 +189,45 @@ void SamplexpressVoice::renderNextBlock (juce::AudioBuffer<float>& outputBuffer,
         float pitchOffset = (pitchEnv - pitchSustain) * static_cast<float> (PITCH_ENV_SEMITONES);
         double effectivePitchRatio = basePitchRatio * std::pow (2.0, pitchOffset / 12.0);
 
-        float leftSample  = cubicInterpolate (leftData, numSamplesInBuffer, sourceSamplePosition);
-        float rightSample = rightData != nullptr
+        // Loop crossfade logic
+        float leftSample, rightSample;
+
+        if (loopEnabled && sourceSamplePosition >= static_cast<double> (loopEndSample - crossfadeSamples))
+        {
+            double loopBPos = static_cast<double> (loopStartSample)
+                              + (sourceSamplePosition - static_cast<double> (loopEndSample - crossfadeSamples));
+
+            float progress = 0.0f;
+            if (crossfadeSamples > 0)
+                progress = static_cast<float> ((sourceSamplePosition - (loopEndSample - crossfadeSamples)) / crossfadeSamples);
+            progress = juce::jlimit (0.0f, 1.0f, progress);
+
+            float fadeOut = std::cos (progress * juce::MathConstants<float>::halfPi);
+            float fadeIn  = std::sin (progress * juce::MathConstants<float>::halfPi);
+
+            float leftA  = cubicInterpolate (leftData, numSamplesInBuffer, sourceSamplePosition);
+            float rightA = rightData != nullptr
+                               ? cubicInterpolate (rightData, numSamplesInBuffer, sourceSamplePosition)
+                               : leftA;
+
+            float leftB  = cubicInterpolate (leftData, numSamplesInBuffer, loopBPos);
+            float rightB = rightData != nullptr
+                               ? cubicInterpolate (rightData, numSamplesInBuffer, loopBPos)
+                               : leftB;
+
+            leftSample  = leftA  * fadeOut + leftB  * fadeIn;
+            rightSample = rightA * fadeOut + rightB * fadeIn;
+
+            if (sourceSamplePosition >= loopEndSample)
+                sourceSamplePosition = loopBPos;
+        }
+        else
+        {
+            leftSample  = cubicInterpolate (leftData, numSamplesInBuffer, sourceSamplePosition);
+            rightSample = rightData != nullptr
                               ? cubicInterpolate (rightData, numSamplesInBuffer, sourceSamplePosition)
                               : leftSample;
+        }
 
         float leftFiltered  = filter.processSample (0, leftSample * velocityGain);
         float rightFiltered = filter.processSample (1, rightSample * velocityGain);

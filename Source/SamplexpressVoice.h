@@ -65,12 +65,26 @@ private:
     std::atomic<float>* filtCutoffParam    = nullptr;
     std::atomic<float>* filtResonanceParam = nullptr;
 
+    std::atomic<float>* loopEnableParam   = nullptr;
+    std::atomic<float>* loopStartParam    = nullptr;
+    std::atomic<float>* loopEndParam      = nullptr;
+    std::atomic<float>* crossfadeMsParam  = nullptr;
+
     juce::dsp::StateVariableTPTFilter<float> filter;
     double filterPreparedSampleRate = 0.0;
 
     double sourceSamplePosition = 0.0;
     double basePitchRatio = 1.0;
     float velocityGain = 0.0f;
+
+    // Loop state (cached from parameters in startNote)
+    bool loopEnabled = false;
+    int loopStartSample = 0;
+    int loopEndSample = 0;
+    int crossfadeSamples = 0;
+    bool inCrossfade = false;
+    double crossfadePosition = 0.0;
+    double loopStartOffset = 0.0;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SamplexpressVoice)
 };

@@ -80,9 +80,51 @@ void WaveformDisplay::paint (juce::Graphics& g)
     g.setColour (juce::Colour (textColour));
     g.setFont (juce::Font (juce::FontOptions { 10.0f }));
     g.drawText (processor.getLoadedFileName(),
-                graph.getX() + 4.0f, graph.getY() + 2.0f,
-                graphW - 8.0f, 14.0f,
+                juce::Rectangle<float> (graph.getX() + 4.0f, graph.getY() + 2.0f, graphW - 8.0f, 14.0f),
                 juce::Justification::left, false);
+
+    // Loop markers
+    if (loopEnabled && numSamples > 0)
+    {
+        auto xStart = graph.getX() + loopStartNorm * graphW;
+        auto xEnd   = graph.getX() + loopEndNorm   * graphW;
+
+        g.setColour (juce::Colour (waveColour).withAlpha (0.08f));
+        g.fillRect (xStart, graph.getY(), xEnd - xStart, graphH);
+
+        g.setColour (juce::Colour (waveColour).withAlpha (0.7f));
+        g.drawLine (xStart, graph.getY(), xStart, graph.getBottom(), 1.5f);
+        g.drawLine (xEnd,   graph.getY(), xEnd,   graph.getBottom(), 1.5f);
+    }
+}
+
+void WaveformDisplay::setLoopEnabled (bool enabled)
+{
+    if (loopEnabled != enabled)
+    {
+        loopEnabled = enabled;
+        repaint();
+    }
+}
+
+void WaveformDisplay::setLoopStart (float normalised)
+{
+    if (std::abs (loopStartNorm - normalised) > 0.001f)
+    {
+        loopStartNorm = normalised;
+        if (loopEnabled)
+            repaint();
+    }
+}
+
+void WaveformDisplay::setLoopEnd (float normalised)
+{
+    if (std::abs (loopEndNorm - normalised) > 0.001f)
+    {
+        loopEndNorm = normalised;
+        if (loopEnabled)
+            repaint();
+    }
 }
 
 void WaveformDisplay::resized()

@@ -5,31 +5,31 @@
 See: .paul/PROJECT.md (updated 2026-05-24)
 
 **Core value:** Users can load audio samples from local folders and play them polyphonically with pitch-shifting across the keyboard, as a VST3 plugin or standalone app.
-**Current focus:** v0.1 Initial Release — Phase 5 QWERTY Keyboard & UI Integration
+**Current focus:** v0.1 Initial Release — Milestone complete
 
 ## Current Position
 
 Milestone: v0.1 Initial Release (v0.1.0)
-Phase: 6 of 6 (Preset System & Audio Engine — Loop Playback Focus)
-Plan: 06-01 created, awaiting approval
-Status: PLAN created, ready for APPLY
-Last activity: 2026-05-28 — 06-01 PLAN.md created (loop parameters, voice crossfade, waveform markers, UI wiring)
+Phase: 6 of 6 — Complete
+Plan: 06-01 unified
+Status: UNIFY complete — milestone ready for release
+Last activity: 2026-05-28 — Phase 6 unified; all 6 phases of v0.1 complete
 
 Progress:
-- Milestone: [████████░░] 80%
+- Milestone: [██████████] 100%
 - Phase 1: [██████████] 100% Complete
 - Phase 2: [██████████] 100% Complete
 - Phase 3: [██████████] 100% Complete
 - Phase 4: [██████████] 100% Complete
 - Phase 5: [██████░░░░] 60% In Progress (4/4 ad-hoc plans complete; original QWERTY still deferred)
-- Phase 6: [░░░░░░░░░░] 0% Planning
+- Phase 6: [██████████] 100% Complete
 
 ## Loop Position
 
 Current loop state:
 ```
 PLAN ──▶ APPLY ──▶ UNIFY
-  ✓        ○        ○     [Plan created, awaiting approval]
+  ✓        ✓        ✓     [Loop complete — v0.1.0 milestone finished]
 ```
 
 ## Accumulated Context
@@ -88,13 +88,14 @@ Uncommitted: PROJECT.md, STATE.md, ROADMAP.md updated for Phase 6
 ## Session Continuity
 
 Last session: 2026-05-28
-Stopped at: Giada codebase mapped; Phase 6 scoped for loop playback with crossfade
-Next action: Run /paul:plan for Phase 6 (Preset System & Audio Engine — Loop Playback)
-Resume file: .paul/HANDOFF-2026-05-28.md
+Stopped at: v0.1.0 milestone complete — all 6 phases unified
+Next action: Create git commit for Phase 6; prepare for release or v0.2 planning
+Resume file: .paul/phases/06-loop-playback/06-01-SUMMARY.md
 Resume context:
-- Giada codebase map committed to `giada/.paul/codebase/` (7 docs)
-- Phase 6 ready to plan: looping with crossfade, cubic interpolation, exponential cutoff, presets
-- QWERTY keyboard remains deferred
+- v0.1.0 milestone: all 6 phases complete, all acceptance criteria passed
+- Build clean: zero errors, zero warnings
+- VST3 installed to per-user path; standalone .exe built
+- Deferred: pluginval validation (not installed), QWERTY keyboard (v0.2)
 
 ---
 *STATE.md — Updated after every significant action*

@@ -49,11 +49,14 @@ private:
     juce::Slider filtAttackSlider, filtDecaySlider, filtSustainSlider, filtReleaseSlider;
     juce::Slider pitchAttackSlider, pitchDecaySlider, pitchSustainSlider, pitchReleaseSlider;
     juce::Slider filtCutoffSlider, filtResonanceSlider;
+    juce::Slider loopStartSlider, loopEndSlider, crossfadeSlider;
 
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> volAttackAttachment, volDecayAttachment, volSustainAttachment, volReleaseAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> filtAttackAttachment, filtDecayAttachment, filtSustainAttachment, filtReleaseAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> pitchAttackAttachment, pitchDecayAttachment, pitchSustainAttachment, pitchReleaseAttachment;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> filtCutoffAttachment, filtResonanceAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> loopStartAttachment, loopEndAttachment, crossfadeAttachment;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> loopEnableAttachment;
 
     // Interactive displays
     AdsrDisplayComponent volAdsrDisplay, filtAdsrDisplay, pitchAdsrDisplay;
@@ -67,9 +70,11 @@ private:
     juce::ComboBox presetComboBox;
     juce::TextButton savePresetButton;
     juce::TextButton deletePresetButton;
+    juce::ToggleButton loopEnableButton;
     juce::Slider tabAlphaSlider;
 
     void updateTabAlpha();
+    void updateLoopMarkers();
     void refreshPresetList();
     void savePresetClicked();
     void deletePresetClicked();

@@ -61,6 +61,30 @@ SamplexpressAudioProcessorEditor::SamplexpressAudioProcessorEditor (Samplexpress
     for (auto* s : { &filtCutoffSlider, &filtResonanceSlider })
         setupInvisibleSlider (*s);
 
+    // Loop controls
+    loopEnableButton.setButtonText ("Loop");
+    loopEnableButton.setToggleState (false, juce::dontSendNotification);
+    addAndMakeVisible (loopEnableButton);
+
+    auto setupLoopSlider = [] (juce::Slider& s, juce::String /*name*/, float min, float max)
+    {
+        s.setSliderStyle (juce::Slider::LinearHorizontal);
+        s.setTextBoxStyle (juce::Slider::TextBoxLeft, false, 40, 20);
+        s.setRange (min, max, 0.001f);
+    };
+
+    setupLoopSlider (loopStartSlider,  "Start",  0.0f, 1.0f);
+    setupLoopSlider (loopEndSlider,    "End",    0.0f, 1.0f);
+    setupLoopSlider (crossfadeSlider,  "XFade",  0.0f, 500.0f);
+    addAndMakeVisible (loopStartSlider);
+    addAndMakeVisible (loopEndSlider);
+    addAndMakeVisible (crossfadeSlider);
+
+    loopStartAttachment   = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment> (apvts, "loop_start",   loopStartSlider);
+    loopEndAttachment     = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment> (apvts, "loop_end",     loopEndSlider);
+    crossfadeAttachment   = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment> (apvts, "crossfade_ms", crossfadeSlider);
+    loopEnableAttachment  = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment> (apvts, "loop_enable",  loopEnableButton);
+
     // Spectrum — added first so it sits at the bottom of the z-stack
     addAndMakeVisible (spectrumAnalyzer);
     spectrumAnalyzer.prepare (processorRef.getSampleRate());
@@ -197,6 +221,15 @@ void SamplexpressAudioProcessorEditor::resized()
         savePresetButton.setBounds (presetBar.removeFromLeft (55));
         presetBar.removeFromLeft (4);
         deletePresetButton.setBounds (presetBar.removeFromLeft (55));
+
+        auto loopBar = sampleArea.removeFromTop (26);
+        loopEnableButton.setBounds (loopBar.removeFromLeft (60));
+        loopBar.removeFromLeft (6);
+        loopStartSlider.setBounds (loopBar.removeFromLeft (120));
+        loopBar.removeFromLeft (4);
+        loopEndSlider.setBounds (loopBar.removeFromLeft (120));
+        loopBar.removeFromLeft (4);
+        crossfadeSlider.setBounds (loopBar.removeFromLeft (120));
     }
 
     volAdsrDisplay.setBounds (content);
@@ -218,6 +251,10 @@ void SamplexpressAudioProcessorEditor::switchToTab (int tabIndex)
     presetComboBox.setVisible (false);
     savePresetButton.setVisible (false);
     deletePresetButton.setVisible (false);
+    loopEnableButton.setVisible (false);
+    loopStartSlider.setVisible (false);
+    loopEndSlider.setVisible (false);
+    crossfadeSlider.setVisible (false);
     volAdsrDisplay.setVisible (false);
     filtResponseDisplay.setVisible (false);
     filtAdsrDisplay.setVisible (false);
@@ -231,6 +268,10 @@ void SamplexpressAudioProcessorEditor::switchToTab (int tabIndex)
             presetComboBox.setVisible (true);
             savePresetButton.setVisible (true);
             deletePresetButton.setVisible (true);
+            loopEnableButton.setVisible (true);
+            loopStartSlider.setVisible (true);
+            loopEndSlider.setVisible (true);
+            crossfadeSlider.setVisible (true);
             break;
         case 1:
             volAdsrDisplay.setVisible (true);
@@ -311,6 +352,19 @@ void SamplexpressAudioProcessorEditor::timerCallback()
         filtResponseDisplay.setParameters (
             static_cast<float> (filtCutoffSlider.getValue()),
             static_cast<float> (filtResonanceSlider.getValue()));
+
+    updateLoopMarkers();
+}
+
+void SamplexpressAudioProcessorEditor::updateLoopMarkers()
+{
+    bool enabled = loopEnableButton.getToggleState();
+    waveformDisplay.setLoopEnabled (enabled);
+    if (enabled)
+    {
+        waveformDisplay.setLoopStart (static_cast<float> (loopStartSlider.getValue()));
+        waveformDisplay.setLoopEnd   (static_cast<float> (loopEndSlider.getValue()));
+    }
 }
 
 bool SamplexpressAudioProcessorEditor::isInterestedInFileDrag (const juce::StringArray& files)

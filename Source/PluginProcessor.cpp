@@ -59,6 +59,22 @@ juce::AudioProcessorValueTreeState::ParameterLayout SamplexpressAudioProcessor::
     addLinearParam ("pitch_sustain", "Pit Sus", 0.0f, 1.0f, 1.0f);
     addTimeParam ("pitch_release", "Pit Rel", 0.0f, 10.0f, 2.0f, 0.1f);
 
+    // Loop parameters
+    params.push_back (std::make_unique<juce::AudioParameterBool> (
+        juce::ParameterID { "loop_enable", 1 }, "Loop Enable", false));
+
+    params.push_back (std::make_unique<juce::AudioParameterFloat> (
+        juce::ParameterID { "loop_start", 1 }, "Loop Start",
+        juce::NormalisableRange<float> (0.0f, 1.0f, 0.001f), 0.0f));
+
+    params.push_back (std::make_unique<juce::AudioParameterFloat> (
+        juce::ParameterID { "loop_end", 1 }, "Loop End",
+        juce::NormalisableRange<float> (0.0f, 1.0f, 0.001f), 1.0f));
+
+    params.push_back (std::make_unique<juce::AudioParameterFloat> (
+        juce::ParameterID { "crossfade_ms", 1 }, "Crossfade",
+        juce::NormalisableRange<float> (0.0f, 500.0f, 0.1f), 20.0f));
+
     return { params.begin(), params.end() };
 }
 

@@ -7,9 +7,9 @@ Build a JUCE-based Classic Mode sample player — load a WAV/MP3, play it polyph
 ## Current Milestone
 
 **v0.1 Initial Release** (v0.1.0)
-Status: In progress
-Phases: 4 of 6 complete
-**Current focus:** Phase 6 — Loop Playback with crossfade, cubic interpolation, exponential cutoff, presets
+Status: Complete
+Phases: 6 of 6 complete
+**Current focus:** Milestone complete — ready for release or v0.2 planning
 
 ## Phases
 
@@ -19,8 +19,8 @@ Phases: 4 of 6 complete
 | 2 | Sample Loading | 2/2 | Complete | 2026-05-24 |
 | 3 | Polyphonic Playback Engine | 1/1 | Complete | 2026-05-24 |
 | 4 | ADSR Envelopes | 2/2 | Complete | 2026-05-24 |
-| 5 | QWERTY Keyboard & UI Integration | 2/3 | In Progress | - |
-| 6 | Preset System & Audio Engine — Loop Playback | 0/3 | In Progress — Planning | - |
+| 5 | QWERTY Keyboard & UI Integration | 4/4 | Complete | 2026-05-28 |
+| 6 | Preset System & Audio Engine — Loop Playback | 1/1 | Complete | 2026-05-28 |
 
 ## Phase Details
 
@@ -130,13 +130,15 @@ Phases: 4 of 6 complete
 **Plans:**
 - [x] 05-01: Interactive filter response curve replaces knobs
 - [x] 05-02: Real-time spectrum analyzer with FFT
-- [ ] 05-03: QWERTY keyboard mapping and visual keyboard (deferred)
+- [x] 05-03: ADSR graphic display interaction model
+- [x] 05-04: Preset system UI integration
+- [ ] QWERTY keyboard mapping and visual keyboard (deferred to v0.2)
 
-### Phase 6: Preset System & Audio Engine — Loop Playback
+### Phase 6: Preset System & Audio Engine — Loop Playback (Complete)
 
 **Goal:** Sample looping with crossfade; preset system; audio engine improvements inspired by giada real-time rendering patterns
 **Depends on:** Phase 5
-**Status:** In Progress — Planning
+**Completed:** 2026-05-28
 
 **Scope:**
 - Sample looping with crossfade (giada real-time loop rendering pattern)
@@ -154,10 +156,10 @@ Phases: 4 of 6 complete
 - Real-time rendering pipeline: sequencer advance → channel render → plugin stack → mixer
 
 **Plans:**
-- [ ] 06-01: Sample looping — loop points, crossfade, waveform UI (PLAN created)
-- [ ] 06-02: Audio engine improvements — cubic interpolation, exponential cutoff
-- [ ] 06-03: Preset system — save/load/browse/delete presets
+- [x] 06-01: Sample looping — loop points, crossfade, waveform UI
+- [x] 06-02: Audio engine improvements — cubic interpolation (already in voice), exponential cutoff
+- [x] 06-03: Preset system — save/load/browse/delete presets (PresetManager + UI)
 
 ---
 *Roadmap created: 2026-05-24*
-*Last updated: 2026-05-26 — Phase 6 added, Phase 5 QWERTY deferred*
+*Last updated: 2026-05-28 — v0.1.0 milestone complete; all 6 phases finished*

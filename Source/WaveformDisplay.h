@@ -12,8 +12,16 @@ public:
     void paint (juce::Graphics& g) override;
     void resized() override;
 
+    void setLoopEnabled (bool enabled);
+    void setLoopStart (float normalised);
+    void setLoopEnd (float normalised);
+
 private:
     SamplexpressAudioProcessor& processor;
+
+    bool loopEnabled{false};
+    float loopStartNorm{0.0f};
+    float loopEndNorm{1.0f};
 
     static constexpr auto panelBgColour = 0xFF18181A;
     static constexpr auto waveColour    = 0xFFFFAA33;

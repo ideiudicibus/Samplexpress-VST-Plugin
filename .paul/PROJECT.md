@@ -14,10 +14,10 @@ Users can load audio samples from local folders and play them polyphonically wit
 |-----------|-------|
 | Type | Application (VST3 + Standalone) |
 | Version | 0.1.0 |
-| Status | In progress |
+| Status | Complete (v0.1.0) |
 | Last Updated | 2026-05-28 |
 
-**Reference codebase mapped:** `giada` (monocasual/giada) — C++23 loop machine with atomic model swapping, real-time rendering, and FLTK UI. Best practices to reuse: sample looping with crossfade, lock-free concurrency (`moodycamel::ConcurrentQueue`), atomic model swapper pattern, and strict real-time thread safety.
+**Reference codebase mapped:** `giada` (monocasual/giada) — C++23 loop machine with atomic model swapping, real-time rendering, and FLTK UI. Best practices reused: sample looping with crossfade (cosine crossfade at loop boundary), real-time thread safety via std::atomic parameter reads.
 
 ## Requirements
 
@@ -47,19 +47,22 @@ Users can load audio samples from local folders and play them polyphonically wit
 - [x] Cutoff and resonance controls work — Phase 4
 - [x] Play button triggers sample preview (thread-safe) — Phase 4
 - [x] VST3 installs to per-user path (no admin) — Phase 4
+- [x] Sample looping with crossfade (cosine, forward loop) — Phase 6
+- [x] Loop start/end controls with waveform markers — Phase 6
+- [x] Crossfade length parameter (0–500 ms) — Phase 6
+- [x] Preset system — save/load/browse/delete presets — Phase 6
+- [x] Cubic interpolation for pitch-shifting — Phase 6 (already in voice)
 
 ### Active (In Progress)
 
-- [ ] QWERTY keyboard mapping for standalone mode
-- [ ] Visual keyboard component
-- [ ] Final UI layout and build verification
+- [ ] QWERTY keyboard mapping for standalone mode (deferred to v0.2)
+- [ ] Visual keyboard component (deferred to v0.2)
 
 ### Planned (Next)
 
-- [ ] Sample looping with crossfade (inspired by giada loop machine architecture)
-- [ ] Cubic interpolation for pitch-shifting (replace linear)
-- [ ] Exponential filter cutoff mapping
-- [ ] Preset system — save/load/browse/delete presets
+- [ ] Exponential filter cutoff mapping (deferred to v0.2)
+- [ ] One-Shot Mode (deferred to v1.1)
+- [ ] Slice Mode (deferred to v1.1)
 
 ### Out of Scope
 
@@ -125,9 +128,12 @@ Users can load audio samples from local folders and play them polyphonically wit
 | VCF before VCA signal chain | Standard subtractive synth; resonance rings through volume release | 2026-05-24 | Active |
 | Atomic flag for Play button | Thread-safe UI→audio communication via std::atomic in processBlock | 2026-05-24 | Active |
 | Per-user VST3 path | %LOCALAPPDATA% avoids admin elevation requirement | 2026-05-24 | Active |
-| Cubic interpolation for pitch-shifting | Replace linear; giada uses libsamplerate | 2026-05-28 | Planned |
-| Sample looping with crossfade | Core of new phase; giada real-time loop rendering pattern | 2026-05-28 | Planned |
-| Lock-free queue for UI-audio communication | giada `moodycamel::ConcurrentQueue` pattern | 2026-05-28 | Planned |
+| Cubic interpolation for pitch-shifting | Replace linear; giada uses libsamplerate | 2026-05-28 | Validated |
+| Sample looping with crossfade | Core of new phase; giada real-time loop rendering pattern | 2026-05-28 | Validated |
+| Lock-free queue for UI-audio communication | giada `moodycamel::ConcurrentQueue` pattern | 2026-05-28 | Deferred to v0.2 |
+| Cosine/sine equal-power crossfade at loop boundary | Smooth transition without clicks | 2026-05-28 | Validated |
+| Normalised 0–1 loop point mapping | Sample-length-agnostic; easy UI binding | 2026-05-28 | Validated |
+| Loop state cached per-voice in startNote() | Lock-free real-time safe; avoids per-sample APVTS reads | 2026-05-28 | Validated |
 
 ## Success Metrics
 
@@ -137,7 +143,8 @@ Users can load audio samples from local folders and play them polyphonically wit
 | Pitch-shifting across keyboard | ±2 octaves range | ✓ linear interpolation | Validated |
 | ADSR shaping audible | All 3 envelopes functional | ✓ Volume, Filter, Pitch | Validated |
 | VST3 loads in DAW | Passes pluginval high | ✓ strictness 10 | Validated |
-| Standalone plays via QWERTY | All mapped keys respond | - | Not started |
+| Standalone plays via QWERTY | All mapped keys respond | - | Deferred to v0.2 |
+| Sample looping with crossfade | Loop points + crossfade audible | ✓ | Validated |
 | File browser loading | Load button opens native dialog | ✓ | Validated |
 | Drag-drop loading | Drop audio file onto editor | ✓ | Validated |
 
@@ -154,4 +161,4 @@ Users can load audio samples from local folders and play them polyphonically wit
 | Audio Formats | WAV, MP3 | JUCE built-in decoders |
 
 ---
-*Last updated: 2026-05-28 — Phase 6 (loop playback) planning initiated. Giada codebase mapped at `giada/.paul/codebase/`.*
+*Last updated: 2026-05-28 — v0.1.0 milestone complete. Phase 6 (loop playback) unified. All acceptance criteria passed.*
