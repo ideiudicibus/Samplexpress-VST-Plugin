@@ -6,7 +6,27 @@ Build a JUCE-based Classic Mode sample player — load a WAV/MP3, play it polyph
 
 ## Current Milestone
 
-Run `/paul:discuss-milestone` or `/paul:milestone` to define the next milestone.
+**v0.2 Interactive UI** (v0.2.0)
+Status: In Progress
+Phases: 0 of 3 complete
+
+| Phase | Name | Plans | Status | Completed |
+|-------|------|-------|--------|-----------|
+| 08 | Visual Keyboard Component | TBD | Not started | - |
+| 09 | Waveform Interaction | TBD | Not started | - |
+| 10 | UI/UX Polish | TBD | Not started | - |
+
+### Phase 08: Visual Keyboard Component
+Focus: On-screen piano keyboard that highlights pressed keys during QWERTY or MIDI input.
+Plans: TBD (defined during /paul:plan)
+
+### Phase 09: Waveform Interaction
+Focus: Click/drag on waveform to set loop start/end points; optional playhead cursor.
+Plans: TBD (defined during /paul:plan)
+
+### Phase 10: UI/UX Polish
+Focus: Exponential filter cutoff mapping, tab z-order refinements, visual feedback improvements.
+Plans: TBD (defined during /paul:plan)
 
 ## Completed Milestones
 

@@ -9,21 +9,22 @@ See: .paul/PROJECT.md (updated 2026-05-28)
 
 ## Current Position
 
-Milestone: v0.1 Initial Release (v0.1.0) — Complete
-Phase: None active
-Plan: None
-Status: Milestone complete — ready for next
-Last activity: 2026-06-03 — Milestone v0.1.0 archived; MILESTONES.md created
+Milestone: v0.2 Interactive UI (v0.2.0)
+Phase: 08 of 10 — Visual Keyboard Component
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-06-03 — Milestone v0.2 created; Phase 07 deferred to v0.3
 
 Progress:
 - v0.1 Initial Release: [██████████] 100% Complete
+- v0.2 Interactive UI:  [░░░░░░░░░░] 0% Complete
 
 ## Loop Position
 
 Current loop state:
 ```
 PLAN ──▶ APPLY ──▶ UNIFY
-  ○        ○        ○     [Milestone complete - ready for next]
+  ○        ○        ○     [Ready for first PLAN]
 ```
 
 ## Accumulated Context
@@ -44,13 +45,13 @@ PLAN ──▶ APPLY ──▶ UNIFY
 
 ### Deferred Issues
 
-- QWERTY keyboard mapping still deferred to v0.2
-- Exponential filter cutoff mapping deferred to v0.2
+- QWERTY keyboard mapping — deferred to v0.3
+- Exponential filter cutoff mapping — Phase 10 (v0.2)
 - PITCH_ENV_SEMITONES hardcoded at 12 semitones (to be parameterized in v1.1)
 - Filter is low-pass only (no high-pass or band-pass modes) — v1.1
 - LFO modulation — v1.1
 - One-Shot / Slice modes — v1.1
-- Lock-free queue for UI→audio communication (giada pattern) — v0.2
+- Lock-free queue for UI→audio communication (giada pattern) — v0.3
 
 ### Reference Codebase
 
@@ -62,21 +63,20 @@ PLAN ──▶ APPLY ──▶ UNIFY
 
 ### Git State
 
-Last commit: c94707a (feat(06-loop-playback): sample looping with crossfade)
+Last commit: 1862460 (fix(ui): ensure loop controls render above spectrum background)
 Branch: main
-Uncommitted: .paul/MILESTONES.md, .paul/milestones/, .paul/ROADMAP.md, .paul/STATE.md
+Uncommitted: .paul/ROADMAP.md, .paul/STATE.md
 
 ## Session Continuity
 
 Last session: 2026-06-03
-Stopped at: Milestone v0.1.0 complete — archived, ready for next milestone
-Next action: /paul:discuss-milestone or /paul:milestone
-Resume file: .paul/MILESTONES.md
+Stopped at: Milestone v0.2 created; Phase 07 deferred to v0.3
+Next action: /paul:plan for Phase 08
+Resume file: .paul/ROADMAP.md
 Resume context:
-- v0.1.0 milestone: all 6 phases complete, all acceptance criteria passed
-- Build clean: zero errors, zero warnings
-- VST3 installed to per-user path; standalone .exe built
-- MILESTONES.md created with full accomplishment log
+- v0.2 milestone created with phases 08-10
+- Phase 07 (QWERTY keyboard mapping) deferred to v0.3
+- Post-milestone fix: loop controls z-order fix committed
 
 ---
 *STATE.md — Updated after every significant action*

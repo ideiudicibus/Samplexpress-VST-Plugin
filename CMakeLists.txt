@@ -25,6 +25,7 @@ target_sources(Samplexpress
     PRIVATE
         Source/PluginProcessor.cpp
         Source/PluginEditor.cpp
+        Source/VisualKeyboardComponent.cpp
         Source/SamplexpressVoice.cpp
         Source/SamplexpressLookAndFeel.cpp
         Source/AdsrDisplayComponent.cpp
