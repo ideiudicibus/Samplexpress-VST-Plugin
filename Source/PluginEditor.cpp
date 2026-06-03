@@ -64,7 +64,6 @@ SamplexpressAudioProcessorEditor::SamplexpressAudioProcessorEditor (Samplexpress
     // Loop controls
     loopEnableButton.setButtonText ("Loop: OFF");
     loopEnableButton.setToggleState (false, juce::dontSendNotification);
-    addAndMakeVisible (loopEnableButton);
 
     auto setupLoopSlider = [] (juce::Slider& s, juce::String /*name*/, float min, float max)
     {
@@ -76,9 +75,6 @@ SamplexpressAudioProcessorEditor::SamplexpressAudioProcessorEditor (Samplexpress
     setupLoopSlider (loopStartSlider,  "Start",  0.0f, 1.0f);
     setupLoopSlider (loopEndSlider,    "End",    0.0f, 1.0f);
     setupLoopSlider (crossfadeSlider,  "XFade",  0.0f, 500.0f);
-    addAndMakeVisible (loopStartSlider);
-    addAndMakeVisible (loopEndSlider);
-    addAndMakeVisible (crossfadeSlider);
 
     loopStartAttachment   = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment> (apvts, "loop_start",   loopStartSlider);
     loopEndAttachment     = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment> (apvts, "loop_end",     loopEndSlider);
@@ -143,6 +139,12 @@ SamplexpressAudioProcessorEditor::SamplexpressAudioProcessorEditor (Samplexpress
     deletePresetButton.setButtonText ("Delete");
     deletePresetButton.onClick = [this] { deletePresetClicked(); };
     addAndMakeVisible (deletePresetButton);
+
+    // Loop controls — must be after spectrum / ADSR displays in z-order so they stay visible
+    addAndMakeVisible (loopEnableButton);
+    addAndMakeVisible (loopStartSlider);
+    addAndMakeVisible (loopEndSlider);
+    addAndMakeVisible (crossfadeSlider);
 
     // Tab transparency knob
     tabAlphaSlider.setSliderStyle (juce::Slider::Rotary);

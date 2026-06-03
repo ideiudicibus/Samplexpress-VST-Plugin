@@ -12,10 +12,13 @@ void TabBar::setTabNames (const juce::StringArray& names)
 
 void TabBar::setCurrentTab (int index)
 {
-    if (index != currentTabIndex && index >= 0 && index < tabNames.size())
+    if (index >= 0 && index < tabNames.size())
     {
-        currentTabIndex = index;
-        repaint();
+        if (index != currentTabIndex)
+        {
+            currentTabIndex = index;
+            repaint();
+        }
         if (callback) callback (currentTabIndex);
     }
 }
