@@ -127,16 +127,19 @@ SamplexpressAudioProcessorEditor::SamplexpressAudioProcessorEditor (Samplexpress
     tabBar.setTabNames ({ "SAMPLE", "VOLUME", "FILTER", "PITCH" });
     tabBar.setTabChangedCallback ([this] (int idx) { switchToTab (idx); });
 
-    // Preset UI
+    // Preset UI (now in title bar — always visible regardless of tab)
     presetComboBox.setTextWhenNothingSelected ("Select preset...");
+    presetComboBox.setVisible (true);
     addAndMakeVisible (presetComboBox);
     presetComboBox.onChange = [this] { presetChanged(); };
 
     savePresetButton.setButtonText ("Save");
+    savePresetButton.setVisible (true);
     savePresetButton.onClick = [this] { savePresetClicked(); };
     addAndMakeVisible (savePresetButton);
 
     deletePresetButton.setButtonText ("Delete");
+    deletePresetButton.setVisible (true);
     deletePresetButton.onClick = [this] { deletePresetClicked(); };
     addAndMakeVisible (deletePresetButton);
 
@@ -191,13 +194,24 @@ void SamplexpressAudioProcessorEditor::resized()
 
     // Title bar
     auto titleBar = bounds.removeFromTop (28);
-    tabAlphaSlider.setBounds (titleBar.removeFromLeft (26));
-    titleBar.removeFromLeft (6);
+    // Alpha knob: 34 px diameter, vertically centred in the 28 px title bar by
+    // extending the bounds 3 px above and 3 px below the title row.
+    {
+        auto knobArea = titleBar.removeFromLeft (34);
+        tabAlphaSlider.setBounds (knobArea.getX(), knobArea.getY() - 3, 34, 34);
+    }
+    titleBar.removeFromLeft (8);
     titleLabel.setBounds (titleBar.removeFromLeft (110));
-    titleBar.removeFromLeft (12);
+    titleBar.removeFromLeft (8);
     loadButton.setBounds (titleBar.removeFromLeft (55));
     titleBar.removeFromLeft (4);
     playButton.setBounds (titleBar.removeFromLeft (55));
+    titleBar.removeFromLeft (8);
+    presetComboBox.setBounds (titleBar.removeFromLeft (140));
+    titleBar.removeFromLeft (6);
+    savePresetButton.setBounds (titleBar.removeFromLeft (55));
+    titleBar.removeFromLeft (4);
+    deletePresetButton.setBounds (titleBar.removeFromLeft (55));
     titleBar.removeFromLeft (8);
     fileNameLabel.setBounds (titleBar);
 
@@ -220,12 +234,6 @@ void SamplexpressAudioProcessorEditor::resized()
     {
         auto sampleArea = content;
         sampleInfoLabel.setBounds (sampleArea.removeFromTop (20));
-        auto presetBar = sampleArea.removeFromTop (26);
-        presetComboBox.setBounds (presetBar.removeFromLeft (140));
-        presetBar.removeFromLeft (6);
-        savePresetButton.setBounds (presetBar.removeFromLeft (55));
-        presetBar.removeFromLeft (4);
-        deletePresetButton.setBounds (presetBar.removeFromLeft (55));
 
         auto loopBar = sampleArea.removeFromTop (26);
         loopEnableButton.setBounds (loopBar.removeFromLeft (60));
@@ -257,9 +265,6 @@ void SamplexpressAudioProcessorEditor::resized()
 void SamplexpressAudioProcessorEditor::switchToTab (int tabIndex)
 {
     sampleInfoLabel.setVisible (false);
-    presetComboBox.setVisible (false);
-    savePresetButton.setVisible (false);
-    deletePresetButton.setVisible (false);
     loopEnableButton.setVisible (false);
     loopStartSlider.setVisible (false);
     loopEndSlider.setVisible (false);
@@ -268,15 +273,13 @@ void SamplexpressAudioProcessorEditor::switchToTab (int tabIndex)
     filtResponseDisplay.setVisible (false);
     filtAdsrDisplay.setVisible (false);
     pitchAdsrDisplay.setVisible (false);
+    // presetComboBox, savePresetButton, deletePresetButton live in the title bar — always visible
     // spectrumAnalyzer stays visible on every tab
 
     switch (tabIndex)
     {
         case 0:
             sampleInfoLabel.setVisible (true);
-            presetComboBox.setVisible (true);
-            savePresetButton.setVisible (true);
-            deletePresetButton.setVisible (true);
             loopEnableButton.setVisible (true);
             loopStartSlider.setVisible (true);
             loopEndSlider.setVisible (true);
