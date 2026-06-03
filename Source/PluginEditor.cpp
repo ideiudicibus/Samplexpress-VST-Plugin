@@ -257,7 +257,8 @@ void SamplexpressAudioProcessorEditor::resized()
     pitchAdsrDisplay.setBounds (content);
 
     auto keyboardHeight = 50;
-    auto contentMinusKeyboard = content.removeFromTop (content.getHeight() - keyboardHeight - 4);
+    auto spectrumHeight = juce::jmax (50, content.getHeight() - keyboardHeight - 4);
+    auto contentMinusKeyboard = content.removeFromTop (spectrumHeight);
     spectrumAnalyzer.setBounds (contentMinusKeyboard);
     visualKeyboard.setBounds (content);
 }
