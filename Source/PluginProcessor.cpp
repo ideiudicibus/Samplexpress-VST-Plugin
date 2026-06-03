@@ -157,6 +157,8 @@ void SamplexpressAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
         midiMessages.addEvent (juce::MidiMessage::noteOn (previewChannel, previewNote, 0.7f), 1);
     }
 
+    keyboardState.processNextMidiBuffer (midiMessages, 0, buffer.getNumSamples(), true);
+
     synth.renderNextBlock (buffer, midiMessages, 0, buffer.getNumSamples());
 
     // Capture mixed mono output for spectrum analyzer

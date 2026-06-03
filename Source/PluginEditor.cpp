@@ -1,9 +1,9 @@
 #include "PluginEditor.h"
 
 SamplexpressAudioProcessorEditor::SamplexpressAudioProcessorEditor (SamplexpressAudioProcessor& p)
-    : AudioProcessorEditor (&p), processorRef (p), spectrumAnalyzer (p), waveformDisplay (p)
+    : AudioProcessorEditor (&p), processorRef (p), visualKeyboard (p.getKeyboardState()), spectrumAnalyzer (p), waveformDisplay (p)
 {
-    setSize (600, 440);
+    setSize (600, 480);
     setLookAndFeel (&customLookAndFeel);
 
     titleLabel.setText ("Samplexpress", juce::dontSendNotification);
@@ -140,6 +140,9 @@ SamplexpressAudioProcessorEditor::SamplexpressAudioProcessorEditor (Samplexpress
     deletePresetButton.onClick = [this] { deletePresetClicked(); };
     addAndMakeVisible (deletePresetButton);
 
+    // Keyboard — always visible at bottom
+    addAndMakeVisible (visualKeyboard);
+
     // Loop controls — must be after spectrum / ADSR displays in z-order so they stay visible
     addAndMakeVisible (loopEnableButton);
     addAndMakeVisible (loopStartSlider);
@@ -244,7 +247,11 @@ void SamplexpressAudioProcessorEditor::resized()
     }
 
     pitchAdsrDisplay.setBounds (content);
-    spectrumAnalyzer.setBounds (content);
+
+    auto keyboardHeight = 50;
+    auto contentMinusKeyboard = content.removeFromTop (content.getHeight() - keyboardHeight - 4);
+    spectrumAnalyzer.setBounds (contentMinusKeyboard);
+    visualKeyboard.setBounds (content);
 }
 
 void SamplexpressAudioProcessorEditor::switchToTab (int tabIndex)

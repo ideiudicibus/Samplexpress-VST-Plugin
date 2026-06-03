@@ -49,6 +49,7 @@ public:
     int getMidiRootNote() const { return midiRootNote; }
     void setMidiRootNote (int note) { midiRootNote = note; }
     juce::AudioProcessorValueTreeState& getAPVTS() { return apvts; }
+    juce::MidiKeyboardState& getKeyboardState() { return keyboardState; }
     std::atomic<bool> sampleChanged{false};
 
     std::atomic<bool> previewPlayRequested{false};
@@ -73,6 +74,7 @@ private:
     juce::AudioBuffer<float> sampleBuffer;
     double sampleSampleRate = 0.0;
     juce::String loadedFileName;
+    juce::MidiKeyboardState keyboardState;
     juce::Synthesiser synth;
     juce::SpinLock soundLock;
     int midiRootNote = 60;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "PluginProcessor.h"
+#include "VisualKeyboardComponent.h"
 #include "SamplexpressLookAndFeel.h"
 #include "AdsrDisplayComponent.h"
 #include "FilterResponseComponent.h"
@@ -34,6 +35,7 @@ private:
     void filesDropped (const juce::StringArray& files, int x, int y) override;
 
     SamplexpressAudioProcessor& processorRef;
+    VisualKeyboardComponent visualKeyboard;
     SamplexpressLookAndFeel customLookAndFeel;
 
     juce::Label titleLabel;
