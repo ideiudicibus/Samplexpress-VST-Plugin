@@ -67,8 +67,9 @@ void SamplexpressLookAndFeel::drawButtonBackground (juce::Graphics& g, juce::But
                                                     bool shouldDrawButtonAsHighlighted,
                                                     bool shouldDrawButtonAsDown)
 {
-    auto bounds = button.getLocalBounds().toFloat().reduced (0.5f);
-    auto cornerSize = 6.0f;
+    // Flat, non-rounded button. Inset by 2 px vertically so the painted surface is
+    // visually thinner than the row height allocated by the editor layout.
+    auto bounds = button.getLocalBounds().toFloat().reduced (0.5f, 2.0f);
     auto baseColour = juce::Colour (buttonBgColour);
 
     if (button.getToggleState())
@@ -79,13 +80,13 @@ void SamplexpressLookAndFeel::drawButtonBackground (juce::Graphics& g, juce::But
         baseColour = baseColour.brighter (0.1f);
 
     g.setColour (baseColour);
-    g.fillRoundedRectangle (bounds, cornerSize);
+    g.fillRect (bounds);
 
     auto borderColour = button.getToggleState()
                           ? juce::Colour (knobAccentColour).darker (0.2f)
                           : juce::Colour (knobTrackColour);
     g.setColour (borderColour);
-    g.drawRoundedRectangle (bounds, cornerSize, 1.0f);
+    g.drawRect (bounds, 1.0f);
 }
 
 void SamplexpressLookAndFeel::drawLabel (juce::Graphics& g, juce::Label& label)

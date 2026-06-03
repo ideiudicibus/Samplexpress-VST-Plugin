@@ -13,9 +13,9 @@ Users can load audio samples from local folders and play them polyphonically wit
 | Attribute | Value |
 |-----------|-------|
 | Type | Application (VST3 + Standalone) |
-| Version | 0.1.0 |
-| Status | Complete (v0.1.0) |
-| Last Updated | 2026-05-28 |
+| Version | 0.2.0 |
+| Status | In Progress (v0.2 Interactive UI) |
+| Last Updated | 2026-06-03 |
 
 **Reference codebase mapped:** `giada` (monocasual/giada) — C++23 loop machine with atomic model swapping, real-time rendering, and FLTK UI. Best practices reused: sample looping with crossfade (cosine crossfade at loop boundary), real-time thread safety via std::atomic parameter reads.
 
@@ -52,11 +52,11 @@ Users can load audio samples from local folders and play them polyphonically wit
 - [x] Crossfade length parameter (0–500 ms) — Phase 6
 - [x] Preset system — save/load/browse/delete presets — Phase 6
 - [x] Cubic interpolation for pitch-shifting — Phase 6 (already in voice)
+- [x] Visual keyboard component (2 octaves, C3–B4, MIDI note highlight) — Phase 8
 
 ### Active (In Progress)
 
 - [ ] QWERTY keyboard mapping for standalone mode (deferred to v0.2)
-- [ ] Visual keyboard component (deferred to v0.2)
 
 ### Planned (Next)
 
@@ -134,6 +134,8 @@ Users can load audio samples from local folders and play them polyphonically wit
 | Cosine/sine equal-power crossfade at loop boundary | Smooth transition without clicks | 2026-05-28 | Validated |
 | Normalised 0–1 loop point mapping | Sample-length-agnostic; easy UI binding | 2026-05-28 | Validated |
 | Loop state cached per-voice in startNote() | Lock-free real-time safe; avoids per-sample APVTS reads | 2026-05-28 | Validated |
+| Visual keyboard as display-only Component (no LnF) | Self-contained, queries MidiKeyboardState directly, internal 30 Hz repaint | 2026-06-03 | Validated |
+| isNoteOnForChannels(0xffff, note) over non-existent isNoteOn | The canonical MidiKeyboardState API; channel mask 0xffff = any channel | 2026-06-03 | Validated |
 
 ## Success Metrics
 
@@ -161,4 +163,4 @@ Users can load audio samples from local folders and play them polyphonically wit
 | Audio Formats | WAV, MP3 | JUCE built-in decoders |
 
 ---
-*Last updated: 2026-05-28 — v0.1.0 milestone complete. Phase 6 (loop playback) unified. All acceptance criteria passed.*
+*Last updated: 2026-06-03 — v0.2.0 Interactive UI started; Phase 8 (Visual Keyboard Component) unified. All acceptance criteria passed.*
