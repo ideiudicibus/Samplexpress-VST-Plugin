@@ -62,7 +62,7 @@ SamplexpressAudioProcessorEditor::SamplexpressAudioProcessorEditor (Samplexpress
         setupInvisibleSlider (*s);
 
     // Loop controls
-    loopEnableButton.setButtonText ("Loop");
+    loopEnableButton.setButtonText ("Loop: OFF");
     loopEnableButton.setToggleState (false, juce::dontSendNotification);
     addAndMakeVisible (loopEnableButton);
 
@@ -160,7 +160,7 @@ SamplexpressAudioProcessorEditor::SamplexpressAudioProcessorEditor (Samplexpress
 
     refreshPresetList();
 
-    tabBar.setCurrentTab (1); // Default to VOLUME tab
+    tabBar.setCurrentTab (0); // Default to SAMPLE tab (loop controls visible)
     startTimerHz (10);
 }
 
@@ -359,6 +359,7 @@ void SamplexpressAudioProcessorEditor::timerCallback()
 void SamplexpressAudioProcessorEditor::updateLoopMarkers()
 {
     bool enabled = loopEnableButton.getToggleState();
+    loopEnableButton.setButtonText (enabled ? "Loop: ON" : "Loop: OFF");
     waveformDisplay.setLoopEnabled (enabled);
     if (enabled)
     {
