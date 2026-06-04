@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1100" font-family="-apple-system, 'Segoe UI', Roboto, sans-serif" font-size="14">
+  <!--
+    Samplexpress VST3 plugin — architecture overview
+    Three-band layout: Audio Thread (top) / Message Thread (middle) / UI Thread (bottom)
+    Arrows show cross-thread data flow. Colours follow the project's dark-cyan accent.
+  -->
+
+  <defs>
+    <!-- Arrowhead marker -->
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#7a7a85"/>
+    </marker>
+    <marker id="arrow-cyan" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#00CED1"/>
+    </marker>
+    <marker id="arrow-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#FF8C1A"/>
+    </marker>
+
+    <!-- Box shadow (subtle) -->
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
+      <feOffset dx="0" dy="1" result="off"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.5"/></feComponentTransfer>
+      <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+
+    <!-- Reusable: class box -->
+    <style>
+      .band-label { font-size: 18px; font-weight: 600; fill: #cfcfd6; letter-spacing: 0.04em; }
+      .band-sub   { font-size: 12px; fill: #7a7a85; }
+      .classbox   { fill: #1f1f25; stroke: #3a3a45; stroke-width: 1.2; rx: 6; ry: 6; }
+      .classtitle { font-size: 14px; font-weight: 600; fill: #ffffff; }
+      .classfile  { font-size: 11px; fill: #7a7a85; font-family: 'Consolas', 'Menlo', monospace; }
+      .classitem  { font-size: 12px; fill: #cfcfd6; }
+      .classitem-em { font-size: 12px; fill: #00CED1; font-family: 'Consolas', 'Menlo', monospace; }
+      .accent-cyan   { stroke: #00CED1; }
+      .accent-orange { stroke: #FF8C1A; }
+      .arrowline   { stroke: #7a7a85; stroke-width: 1.4; fill: none; }
+      .arrowline-cyan   { stroke: #00CED1; stroke-width: 1.6; fill: none; }
+      .arrowline-orange { stroke: #FF8C1A; stroke-width: 1.6; fill: none; }
+      .arrowline-dashed { stroke: #7a7a85; stroke-width: 1.2; fill: none; stroke-dasharray: 5 4; }
+      .arrownote { font-size: 11px; fill: #7a7a85; font-style: italic; }
+    </style>
+  </defs>
+
+  <!-- Canvas background (matches editor dark theme) -->
+  <rect x="0" y="0" width="1600" height="1100" fill="#121214"/>
+
+  <!-- Title -->
+  <text x="40" y="40" font-size="22" font-weight="700" fill="#ffffff">Samplexpress — Architecture</text>
+  <text x="40" y="62" font-size="13" fill="#7a7a85">JUCE VST3 plugin · v0.2.0 · three-band layered view (Audio / Message / UI threads)</text>
+
+  <!-- ============== BAND 1: AUDIO THREAD ============== -->
+  <g>
+    <rect x="20" y="90" width="1560" height="280" fill="#1a1a20" stroke="#2a2a32" rx="10" ry="10"/>
+    <text x="40" y="120" class="band-label">AUDIO THREAD</text>
+    <text x="40" y="138" class="band-sub">runs inside processBlock() · real-time · no locks · no allocations</text>
+
+    <!-- MIDI In -->
+    <g filter="url(#shadow)">
+      <rect x="40" y="170" width="170" height="90" class="classbox"/>
+      <text x="125" y="195" text-anchor="middle" class="classtitle">MIDI In</text>
+      <text x="125" y="212" text-anchor="middle" class="classfile">from DAW host</text>
+      <text x="125" y="232" text-anchor="middle" class="classitem-em">note-on / off</text>
+      <text x="125" y="248" text-anchor="middle" class="classitem">channel + velocity</text>
+    </g>
+
+    <!-- juce::Synthesiser (hosted by processor) -->
+    <g filter="url(#shadow)">
+      <rect x="260" y="170" width="240" height="160" class="classbox"/>
+      <text x="380" y="195" text-anchor="middle" class="classtitle">juce::Synthesiser</text>
+      <text x="380" y="212" text-anchor="middle" class="classfile">PluginProcessor member</text>
+      <text x="280" y="234" class="classitem">· 16 voices</text>
+      <text x="280" y="252" class="classitem">· voice allocation</text>
+      <text x="280" y="270" class="classitem">· note stealing</text>
+      <text x="280" y="288" class="classitem">· per-voice addSample()</text>
+      <text x="280" y="306" class="classitem-em">· renderNextBlock()</text>
+    </g>
+
+    <!-- SamplexpressVoice + SamplexpressSound -->
+    <g filter="url(#shadow)">
+      <rect x="550" y="170" width="260" height="160" class="classbox"/>
+      <text x="680" y="195" text-anchor="middle" class="classtitle">SamplexpressVoice</text>
+      <text x="680" y="212" text-anchor="middle" class="classfile">SynthesiserVoice subclass</text>
+      <text x="570" y="234" class="classitem">· startNote: compute pitchRatio,</text>
+      <text x="585" y="250" class="classitem">  cache loop state from atomics</text>
+      <text x="570" y="268" class="classitem">· renderNextBlock: sample + ADSR</text>
+      <text x="570" y="286" class="classitem">· StateVariableTPTFilter (VCF)</text>
+      <text x="570" y="304" class="classitem">· ~20 ms release tail on note-off</text>
+      <text x="570" y="322" class="classitem">· cosine equal-power loop xfade</text>
+    </g>
+
+    <!-- SamplexpressSound (small inset) -->
+    <g filter="url(#shadow)">
+      <rect x="860" y="170" width="200" height="80" class="classbox"/>
+      <text x="960" y="195" text-anchor="middle" class="classtitle">SamplexpressSound</text>
+      <text x="960" y="212" text-anchor="middle" class="classfile">SynthesiserSound subclass</text>
+      <text x="960" y="232" text-anchor="middle" class="classitem">pointer to sample buffer,</text>
+      <text x="960" y="248" text-anchor="middle" class="classitem">sample rate, root note</text>
+    </g>
+
+    <!-- Sample buffer + ADSR/Filter (data) — shifted right to clear Sound box -->
+    <g filter="url(#shadow)">
+      <rect x="1100" y="170" width="200" height="100" class="classbox"/>
+      <text x="1200" y="195" text-anchor="middle" class="classtitle">Sample Buffer + DSP</text>
+      <text x="1200" y="215" text-anchor="middle" class="classitem-em">AudioBuffer&lt;float&gt; sampleBuffer</text>
+      <text x="1200" y="233" text-anchor="middle" class="classitem">3 ADSRs (Vol / Filt / Pitch)</text>
+      <text x="1200" y="251" text-anchor="middle" class="classitem">StateVariableTPTFilter (LPF)</text>
+    </g>
+
+    <!-- Audio Out -->
+    <g filter="url(#shadow)">
+      <rect x="1320" y="200" width="170" height="90" class="classbox"/>
+      <text x="1405" y="225" text-anchor="middle" class="classtitle">Audio Out</text>
+      <text x="1405" y="242" text-anchor="middle" class="classfile">stereo bus</text>
+      <text x="1405" y="262" text-anchor="middle" class="classitem">to DAW / host</text>
+    </g>
+
+    <!-- Lock-free ring buffer (audio capture for spectrum) -->
+    <g filter="url(#shadow)">
+      <rect x="1100" y="290" width="240" height="60" class="classbox"/>
+      <text x="1220" y="313" text-anchor="middle" class="classtitle">Lock-free Ring Buffer</text>
+      <text x="1220" y="331" text-anchor="middle" class="classitem">SPSC · mono mix · atomic write/read</text>
+    </g>
+
+    <!-- Audio-thread arrows -->
+    <line x1="210" y1="215" x2="260" y2="215" class="arrowline" marker-end="url(#arrow)"/>
+    <line x1="500" y1="230" x2="550" y2="230" class="arrowline" marker-end="url(#arrow)"/>
+    <line x1="810" y1="210" x2="860" y2="210" class="arrowline" marker-end="url(#arrow)"/>
+    <line x1="810" y1="320" x2="1100" y2="210" class="arrowline" marker-end="url(#arrow)"/>
+    <line x1="1300" y1="220" x2="1320" y2="225" class="arrowline" marker-end="url(#arrow)"/>
+    <line x1="1405" y1="290" x2="1220" y2="320" class="arrowline-cyan" marker-end="url(#arrow-cyan)"/>
+    <text x="1310" y="305" class="arrownote" fill="#00CED1">tap</text>
+  </g>
+
+  <!-- ============== BAND 2: MESSAGE THREAD ============== -->
+  <g>
+    <rect x="20" y="400" width="1560" height="320" fill="#1a1a20" stroke="#2a2a32" rx="10" ry="10"/>
+    <text x="40" y="430" class="band-label">MESSAGE THREAD</text>
+    <text x="40" y="448" class="band-sub">UI events, file I/O, state persistence · not real-time · has locks (SpinLock on sound swap)</text>
+
+    <!-- SamplexpressAudioProcessor (central) -->
+    <g filter="url(#shadow)">
+      <rect x="380" y="475" width="380" height="220" class="classbox"/>
+      <text x="570" y="500" text-anchor="middle" class="classtitle">SamplexpressAudioProcessor</text>
+      <text x="570" y="517" text-anchor="middle" class="classfile">PluginProcessor.h / .cpp · juce::AudioProcessor</text>
+      <line x1="395" y1="528" x2="745" y2="528" stroke="#3a3a45" stroke-width="0.8"/>
+      <text x="395" y="548" class="classitem-em">  juce::Synthesiser synth               (16 voices)</text>
+      <text x="395" y="566" class="classitem-em">  AudioProcessorValueTreeState apvts    (18 params)</text>
+      <text x="395" y="584" class="classitem-em">  AudioBuffer&lt;float&gt; sampleBuffer</text>
+      <text x="395" y="602" class="classitem-em">  juce::SpinLock soundLock              (sound swap)</text>
+      <text x="395" y="620" class="classitem-em">  std::atomic&lt;float&gt;* param ptrs       (RT-safe reads)</text>
+      <text x="395" y="638" class="classitem-em">  juce::MidiKeyboardState keyboardState (for Visual Kbd)</text>
+      <text x="395" y="656" class="classitem-em">  std::atomic&lt;bool&gt; sampleChanged, previewPlayRequested</text>
+      <text x="395" y="674" class="classitem">  loadFile() · getStateInformation() · setStateInformation()</text>
+    </g>
+
+    <!-- File I/O -->
+    <g filter="url(#shadow)">
+      <rect x="50" y="475" width="280" height="100" class="classbox"/>
+      <text x="190" y="500" text-anchor="middle" class="classtitle">File I/O</text>
+      <text x="190" y="517" text-anchor="middle" class="classfile">AudioFormatManager + FileChooser</text>
+      <text x="190" y="538" text-anchor="middle" class="classitem">WAV / MP3 / AIFF</text>
+      <text x="190" y="556" text-anchor="middle" class="classitem">drag-and-drop on editor</text>
+    </g>
+
+    <!-- State persistence -->
+    <g filter="url(#shadow)">
+      <rect x="50" y="595" width="280" height="100" class="classbox"/>
+      <text x="190" y="620" text-anchor="middle" class="classtitle">State Persistence</text>
+      <text x="190" y="637" text-anchor="middle" class="classfile">ValueTree + base64 audio</text>
+      <text x="190" y="658" text-anchor="middle" class="classitem">DAW save/load</text>
+      <text x="190" y="676" text-anchor="middle" class="classitem">portable across systems</text>
+    </g>
+
+    <!-- PresetManager -->
+    <g filter="url(#shadow)">
+      <rect x="810" y="475" width="240" height="100" class="classbox"/>
+      <text x="930" y="500" text-anchor="middle" class="classtitle">PresetManager</text>
+      <text x="930" y="517" text-anchor="middle" class="classfile">PresetManager.h / .cpp</text>
+      <text x="930" y="538" text-anchor="middle" class="classitem">XML files in</text>
+      <text x="930" y="556" text-anchor="middle" class="classitem">Documents/Samplexpress/Presets</text>
+    </g>
+
+    <!-- APVTS detail -->
+    <g filter="url(#shadow)">
+      <rect x="810" y="595" width="240" height="100" class="classbox"/>
+      <text x="930" y="620" text-anchor="middle" class="classtitle">APVTS — 18 parameters</text>
+      <text x="930" y="640" text-anchor="middle" class="classitem">3 × ADSR  (Vol / Filt / Pitch = 12)</text>
+      <text x="930" y="658" text-anchor="middle" class="classitem">2 × Filter  (cutoff / resonance)</text>
+      <text x="930" y="676" text-anchor="middle" class="classitem">4 × Loop  (enable, start, end, xfade)</text>
+    </g>
+
+    <!-- State XML / external -->
+    <g filter="url(#shadow)">
+      <rect x="1110" y="475" width="220" height="100" class="classbox"/>
+      <text x="1220" y="500" text-anchor="middle" class="classtitle">Project State</text>
+      <text x="1220" y="517" text-anchor="middle" class="classfile">APVTS + base64 sample</text>
+      <text x="1220" y="538" text-anchor="middle" class="classitem">DAW project file</text>
+      <text x="1220" y="556" text-anchor="middle" class="classitem">%LOCALAPPDATA%\VST3</text>
+    </g>
+
+    <!-- Cross-thread arrows message→audio -->
+    <line x1="330" y1="525" x2="380" y2="540" class="arrowline" marker-end="url(#arrow)"/>
+    <text x="355" y="525" class="arrownote" text-anchor="middle">read</text>
+    <line x1="330" y1="645" x2="380" y2="660" class="arrowline" marker-end="url(#arrow)"/>
+    <text x="355" y="650" class="arrownote" text-anchor="middle">encode</text>
+    <line x1="760" y1="540" x2="810" y2="525" class="arrowline" marker-end="url(#arrow)"/>
+    <text x="785" y="525" class="arrownote" text-anchor="middle">get/set state</text>
+    <line x1="760" y1="650" x2="810" y2="645" class="arrowline" marker-end="url(#arrow)"/>
+    <text x="785" y="645" class="arrownote" text-anchor="middle">params</text>
+    <line x1="1050" y1="525" x2="1110" y2="525" class="arrowline" marker-end="url(#arrow)"/>
+    <text x="1080" y="518" class="arrownote" text-anchor="middle">write</text>
+
+    <!-- Down to UI -->
+    <line x1="570" y1="695" x2="570" y2="755" class="arrowline-dashed" marker-end="url(#arrow)"/>
+    <text x="580" y="725" class="arrownote">getKeyboardState · getLatestSamples · APVTS</text>
+  </g>
+
+  <!-- ============== BAND 3: UI THREAD ============== -->
+  <g>
+    <rect x="20" y="770" width="1560" height="290" fill="#1a1a20" stroke="#2a2a32" rx="10" ry="10"/>
+    <text x="40" y="800" class="band-label">UI THREAD</text>
+    <text x="40" y="818" class="band-sub">Editor + visual components · 30/10 Hz repaint timers · consumes atomic state from message thread</text>
+
+    <!-- SamplexpressAudioProcessorEditor (central) -->
+    <g filter="url(#shadow)">
+      <rect x="380" y="845" width="380" height="190" class="classbox"/>
+      <text x="570" y="870" text-anchor="middle" class="classtitle">SamplexpressAudioProcessorEditor</text>
+      <text x="570" y="887" text-anchor="middle" class="classfile">PluginEditor.h / .cpp · 600 × 480 px</text>
+      <line x1="395" y1="898" x2="745" y2="898" stroke="#3a3a45" stroke-width="0.8"/>
+      <text x="395" y="918" class="classitem-em">  titleBar: loadButton, playButton, tabAlphaSlider,</text>
+      <text x="408" y="936" class="classitem-em">             presetComboBox, savePresetButton, deletePresetButton</text>
+      <text x="395" y="954" class="classitem-em">  tabBar (4 tabs: SAMPLE / VOLUME / FILTER / PITCH)</text>
+      <text x="395" y="972" class="classitem-em">  18 × Slider (17 APVTS-attached + tabAlpha knob)</text>
+      <text x="395" y="990" class="classitem-em">  SamplexpressLookAndFeel customLookAndFeel (flat LnF)</text>
+      <text x="395" y="1008" class="classitem-em">  Timer (10 Hz) polls sampleChanged → updateSampleInfo()</text>
+    </g>
+
+    <!-- Visual components column -->
+    <g filter="url(#shadow)">
+      <rect x="50" y="845" width="280" height="190" class="classbox"/>
+      <text x="190" y="870" text-anchor="middle" class="classtitle">Visual Components</text>
+      <text x="190" y="887" text-anchor="middle" class="classfile">custom Components · juce::Component</text>
+      <text x="60" y="910" class="classitem-em">WaveformDisplay</text>
+      <text x="60" y="928" class="classitem-em">SpectrumAnalyzerComponent</text>
+      <text x="60" y="946" class="classitem-em">AdsrDisplayComponent × 3</text>
+      <text x="60" y="964" class="classitem-em">FilterResponseComponent</text>
+      <text x="60" y="982" class="classitem-em">VisualKeyboardComponent (C3–B4)</text>
+      <text x="60" y="1000" class="classitem-em">TabBar (4 sections)</text>
+      <text x="60" y="1018" class="classitem">all repaint from timers (10/30 Hz)</text>
+    </g>
+
+    <!-- Output / external -->
+    <g filter="url(#shadow)">
+      <rect x="810" y="845" width="240" height="100" class="classbox"/>
+      <text x="930" y="870" text-anchor="middle" class="classtitle">User Input</text>
+      <text x="930" y="890" text-anchor="middle" class="classitem">drag-and-drop</text>
+      <text x="930" y="908" text-anchor="middle" class="classitem">mouse drag on ADSR / filter</text>
+      <text x="930" y="926" text-anchor="middle" class="classitem">MIDI from DAW (via processor)</text>
+    </g>
+
+    <!-- Presets browser -->
+    <g filter="url(#shadow)">
+      <rect x="810" y="965" width="240" height="70" class="classbox"/>
+      <text x="930" y="990" text-anchor="middle" class="classtitle">Preset Browser</text>
+      <text x="930" y="1010" text-anchor="middle" class="classitem">ComboBox + Save + Delete</text>
+      <text x="930" y="1028" text-anchor="middle" class="classitem">→ PresetManager</text>
+    </g>
+
+    <!-- DAW side -->
+    <g filter="url(#shadow)">
+      <rect x="1110" y="845" width="220" height="190" class="classbox"/>
+      <text x="1220" y="870" text-anchor="middle" class="classtitle">DAW / Host</text>
+      <text x="1220" y="887" text-anchor="middle" class="classfile">external (out of scope)</text>
+      <text x="1220" y="910" text-anchor="middle" class="classitem">sends MIDI</text>
+      <text x="1220" y="928" text-anchor="middle" class="classitem">receives audio</text>
+      <text x="1220" y="946" text-anchor="middle" class="classitem">saves project state</text>
+      <text x="1220" y="964" text-anchor="middle" class="classitem">automation on APVTS</text>
+      <text x="1220" y="982" text-anchor="middle" class="classitem-em">pluginval high-strictness</text>
+      <text x="1220" y="1000" text-anchor="middle" class="classitem">gate (see CLAUDE.md)</text>
+    </g>
+
+    <!-- Cross-band arrows (UI reads from message thread) -->
+    <line x1="330" y1="940" x2="380" y2="940" class="arrowline" marker-end="url(#arrow)"/>
+    <text x="355" y="932" class="arrownote" text-anchor="middle">child comps</text>
+    <line x1="760" y1="900" x2="810" y2="895" class="arrowline" marker-end="url(#arrow)"/>
+    <text x="785" y="912" class="arrownote" text-anchor="middle">user input</text>
+
+    <!-- UI→Audio: parameter changes flow up via APVTS attachments (orange, dashed) -->
+    <line x1="570" y1="845" x2="570" y2="755" class="arrowline-orange" marker-end="url(#arrow-orange)" stroke-dasharray="6 4"/>
+    <text x="600" y="800" class="arrownote" fill="#FF8C1A">APVTS attachments (UI → params)</text>
+  </g>
+
+  <!-- ============== LEGEND ============== -->
+  <g>
+    <rect x="20" y="1065" width="1560" height="28" fill="#1a1a20" stroke="#2a2a32" rx="6" ry="6"/>
+    <line x1="40" y1="1079" x2="80" y2="1079" class="arrowline" marker-end="url(#arrow)"/>
+    <text x="90" y="1083" class="band-sub">data / control flow</text>
+    <line x1="240" y1="1079" x2="280" y2="1079" class="arrowline-orange" marker-end="url(#arrow-orange)"/>
+    <text x="290" y="1083" class="band-sub" fill="#FF8C1A">UI→audio param change</text>
+    <line x1="450" y1="1079" x2="490" y2="1079" class="arrowline-cyan" marker-end="url(#arrow-cyan)"/>
+    <text x="500" y="1083" class="band-sub" fill="#00CED1">audio tap (capture)</text>
+    <line x1="640" y1="1079" x2="680" y2="1079" class="arrowline-dashed" marker-end="url(#arrow)"/>
+    <text x="690" y="1083" class="band-sub">cross-band / cross-thread</text>
+    <text x="1380" y="1083" class="band-sub">v0.2.0 · see docs/PROCESS-RETROSPECTIVE.md</text>
+  </g>
+</svg>

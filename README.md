@@ -24,7 +24,10 @@ Current version: **v0.2.0** (Interactive UI).
 ![Samplexpress v0.2 main UI](docs/screenshot_v0.2_main.png)
 *Main interface (v0.2): title bar with sample file, preset controls, and tab-alpha knob; SAMPLE tab with orange waveform and loop markers; visual piano keyboard along the bottom; spectrum analyser visible behind the tab content.*
 
-## Development Process
+## Architecture
+
+![Architecture diagram](docs/architecture.png)
+*Three-band layered view — audio thread (top), message thread (middle), UI thread (bottom). Cross-thread arrows show data and control flow. Source: [docs/architecture.svg](docs/architecture.svg) (text-editable, scales to any size).*
 
 See [docs/PROCESS-RETROSPECTIVE.md](docs/PROCESS-RETROSPECTIVE.md) for a retrospective on how this VST3 plugin was built — how the PAUL Framework structured the work, how features were described and turned into plans, and the test methodology actually run on this Windows host (versus what `CLAUDE.md` aspires to).
 
