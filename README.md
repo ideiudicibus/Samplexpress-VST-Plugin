@@ -24,6 +24,11 @@ Current version: **v0.2.0** (Interactive UI).
 ![Samplexpress v0.2 main UI](docs/screenshot_v0.2_main.png)
 *Main interface (v0.2): title bar with sample file, preset controls, and tab-alpha knob; SAMPLE tab with orange waveform and loop markers; visual piano keyboard along the bottom; spectrum analyser visible behind the tab content.*
 
+### v0.3 (in progress)
+
+![Samplexpress v0.3 main UI](docs/screenshot_v0.3_main.png)
+*v0.3 work in progress. Description of what ships in v0.3 will be added once the milestone is finalised — see `.paul/ROADMAP.md` for current planning state.*
+
 ## Architecture
 
 ![Architecture diagram](docs/architecture.png)
