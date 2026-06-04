@@ -145,6 +145,33 @@ void AdsrDisplayComponent::fireCallback()
         callback (attack, decay, sustain, release);
 }
 
+juce::String AdsrDisplayComponent::formatNodeValue (DragTarget target) const
+{
+    switch (target)
+    {
+        case DragTarget::attackPeak:
+            return "Atk " + juce::String (attack, 2) + " s";
+        case DragTarget::decaySustain:
+            return "Dec " + juce::String (decay, 2) + " s / Sus "
+                   + juce::String (sustain, 2);
+        case DragTarget::releaseStart:
+            return "Rel " + juce::String (release, 2) + " s";
+        default:
+            return {};
+    }
+}
+
+juce::String AdsrDisplayComponent::getTooltip()
+{
+    switch (hoverTarget)
+    {
+        case DragTarget::attackPeak:   return "Attack";
+        case DragTarget::decaySustain: return "Decay / Sustain";
+        case DragTarget::releaseStart: return "Release";
+        default:                       return {};
+    }
+}
+
 void AdsrDisplayComponent::mouseDown (const juce::MouseEvent& e)
 {
     dragTarget = hitTestNode (e.position);
@@ -236,7 +263,7 @@ void AdsrDisplayComponent::paint (juce::Graphics& g)
     auto drawNode = [&g, this] (juce::Point<float> p, DragTarget t)
     {
         bool active = (dragTarget == t) || (hoverTarget == t);
-        auto radius = active ? 4.0f : 3.0f;
+        auto radius = active ? activeDotRadius : restDotRadius;
         g.setColour (active ? juce::Colour (activeDotColour) : juce::Colour (dotColour));
         g.fillEllipse (p.x - radius, p.y - radius, radius * 2.0f, radius * 2.0f);
 
@@ -260,6 +287,27 @@ void AdsrDisplayComponent::paint (juce::Graphics& g)
         g.setColour (juce::Colour (curveColour).withAlpha (0.3f));
         g.drawHorizontalLine (static_cast<int> (nodes[2].y), graph.getX(), graph.getRight());
         g.drawVerticalLine   (static_cast<int> (nodes[2].x), graph.getY(), graph.getBottom());
+    }
+
+    // Live numeric readout while dragging
+    if (dragTarget != DragTarget::none)
+    {
+        auto readout = formatNodeValue (dragTarget);
+        if (readout.isNotEmpty())
+        {
+            auto nodePos = getNodePosition (dragTarget);
+            g.setFont (juce::Font (juce::FontOptions { readoutFontSize, juce::Font::bold }));
+            auto textW = g.getCurrentFont().getStringWidth (readout) + 8.0f;
+            auto textH = readoutFontSize + 4.0f;
+            juce::Rectangle<float> box (nodePos.x + 12.0f, nodePos.y - textH - 6.0f,
+                                        textW, textH);
+            box.setX (juce::jlimit (graph.getX(), graph.getRight() - textW, box.getX()));
+            box.setY (juce::jlimit (graph.getY(), graph.getBottom() - textH, box.getY()));
+            g.setColour (juce::Colour (bgColour).withAlpha (0.85f));
+            g.fillRoundedRectangle (box, 3.0f);
+            g.setColour (juce::Colour (activeDotColour));
+            g.drawText (readout, box, juce::Justification::centred, false);
+        }
     }
 }
 

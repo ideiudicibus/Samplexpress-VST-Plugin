@@ -230,9 +230,13 @@ void SamplexpressAudioProcessorEditor::resized()
     // Content area — spectrum behind, tab controls on top
     auto content = bounds;
 
-    // Position all tab content (only active one is visible)
+    auto keyboardHeight = 50;
+    auto spectrumHeight = juce::jmax (50, content.getHeight() - keyboardHeight - 4);
+    auto contentMinusKeyboard = content.removeFromTop (spectrumHeight);
+
+    // Position all tab content (only active one is visible) above the keyboard
     {
-        auto sampleArea = content;
+        auto sampleArea = contentMinusKeyboard;
         sampleInfoLabel.setBounds (sampleArea.removeFromTop (20));
 
         auto loopBar = sampleArea.removeFromTop (26);
@@ -245,20 +249,17 @@ void SamplexpressAudioProcessorEditor::resized()
         crossfadeSlider.setBounds (loopBar.removeFromLeft (120));
     }
 
-    volAdsrDisplay.setBounds (content);
+    volAdsrDisplay.setBounds (contentMinusKeyboard);
 
     {
-        auto filterArea = content;
-        filtResponseDisplay.setBounds (filterArea.removeFromTop (content.getHeight() / 2));
+        auto filterArea = contentMinusKeyboard;
+        filtResponseDisplay.setBounds (filterArea.removeFromTop (contentMinusKeyboard.getHeight() / 2));
         filterArea.removeFromTop (2);
         filtAdsrDisplay.setBounds (filterArea);
     }
 
-    pitchAdsrDisplay.setBounds (content);
+    pitchAdsrDisplay.setBounds (contentMinusKeyboard);
 
-    auto keyboardHeight = 50;
-    auto spectrumHeight = juce::jmax (50, content.getHeight() - keyboardHeight - 4);
-    auto contentMinusKeyboard = content.removeFromTop (spectrumHeight);
     spectrumAnalyzer.setBounds (contentMinusKeyboard);
     visualKeyboard.setBounds (content);
 }

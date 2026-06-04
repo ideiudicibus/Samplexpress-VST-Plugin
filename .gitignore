@@ -40,3 +40,7 @@ pluginval.zip
 # Tool-specific directories
 .claude/
 .paul/
+
+# opensource projects
+./giada
+./Absorb

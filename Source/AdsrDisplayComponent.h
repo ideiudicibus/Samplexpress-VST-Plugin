@@ -2,7 +2,8 @@
 
 #include <juce_gui_basics/juce_gui_basics.h>
 
-class AdsrDisplayComponent final : public juce::Component
+class AdsrDisplayComponent final : public juce::Component,
+                                    public juce::TooltipClient
 {
 public:
     AdsrDisplayComponent();
@@ -22,6 +23,8 @@ public:
     void mouseMove (const juce::MouseEvent& e) override;
     void mouseExit (const juce::MouseEvent& e) override;
 
+    juce::String getTooltip() override;
+
     juce::Rectangle<float> getGraphBounds() const;
     void setPanelAlpha (float a) { panelAlpha = juce::jlimit (0.0f, 1.0f, a); repaint(); }
 
@@ -32,6 +35,7 @@ private:
     juce::Point<float> getNodePosition (DragTarget target) const;
     DragTarget hitTestNode (juce::Point<float> pos) const;
     void fireCallback();
+    juce::String formatNodeValue (DragTarget target) const;
 
     float attack  = 0.01f;
     float decay   = 0.1f;
@@ -56,6 +60,9 @@ private:
     static constexpr auto activeDotColour = 0xFFFFFFFF;
     static constexpr auto hitRadius     = 10.0f;
     static constexpr auto margin        = 4.0f;
+    static constexpr float restDotRadius   = 2.5f;
+    static constexpr float activeDotRadius = 3.5f;
+    static constexpr float readoutFontSize = 10.0f;
 
     float panelAlpha = 0.2f;
 

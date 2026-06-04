@@ -14,8 +14,8 @@ Users can load audio samples from local folders and play them polyphonically wit
 |-----------|-------|
 | Type | Application (VST3 + Standalone) |
 | Version | 0.2.0 |
-| Status | In Progress (v0.2 Interactive UI) |
-| Last Updated | 2026-06-03 |
+| Status | Complete (v0.2 Interactive UI — all phases shipped) |
+| Last Updated | 2026-06-04 |
 
 **Reference codebase mapped:** `giada` (monocasual/giada) — C++23 loop machine with atomic model swapping, real-time rendering, and FLTK UI. Best practices reused: sample looping with crossfade (cosine crossfade at loop boundary), real-time thread safety via std::atomic parameter reads.
 
@@ -53,10 +53,19 @@ Users can load audio samples from local folders and play them polyphonically wit
 - [x] Preset system — save/load/browse/delete presets — Phase 6
 - [x] Cubic interpolation for pitch-shifting — Phase 6 (already in voice)
 - [x] Visual keyboard component (2 octaves, C3–B4, MIDI note highlight) — Phase 8
+- [x] Flat non-rounded button rendering (all TextButtons) — Phase 9
+- [x] 34 px tab-alpha knob in title bar; preset ComboBox + Save + Delete in title bar — Phase 9
+- [x] Spectrum height clamp preventing keyboard overlap (juce::jmax(50, …)) — Phase 9
+- [x] ADSR drag handles enlarged (5 px rest, 7 px hover/drag) — Phase 10
+- [x] Per-node ADSR tooltips ("Attack", "Decay / Sustain", "Release") — Phase 10
+- [x] Live numeric readouts while dragging ADSR nodes — Phase 10
+- [x] Tab content sized to content-minus-keyboard strip (no longer hidden by visual keyboard) — Phase 10
 
 ### Active (In Progress)
 
 - [ ] QWERTY keyboard mapping for standalone mode (deferred to v0.2)
+- [ ] Exponential filter cutoff mapping (deferred to v0.2)
+- [ ] Tab z-order refinements and broader visual feedback (originally listed under Phase 10; deferred to next milestone)
 
 ### Planned (Next)
 
@@ -136,6 +145,11 @@ Users can load audio samples from local folders and play them polyphonically wit
 | Loop state cached per-voice in startNote() | Lock-free real-time safe; avoids per-sample APVTS reads | 2026-05-28 | Validated |
 | Visual keyboard as display-only Component (no LnF) | Self-contained, queries MidiKeyboardState directly, internal 30 Hz repaint | 2026-06-03 | Validated |
 | isNoteOnForChannels(0xffff, note) over non-existent isNoteOn | The canonical MidiKeyboardState API; channel mask 0xffff = any channel | 2026-06-03 | Validated |
+| Flat (non-rounded) TextButton rendering with 2-px vertical inset | Aesthetic consistency, "thinner" appearance without changing row layout | 2026-06-03 | Validated |
+| Preset controls live in title bar, not in SAMPLE tab content | Always accessible; reduces per-tab UI complexity | 2026-06-03 | Validated |
+| Spectrum height clamp via jmax(50, content-50-4) | Robust against future resizable window; prevents zero/negative spectrum height | 2026-06-03 | Validated |
+| ADSR tooltips via juce::TooltipClient (not Component::getTooltip) | Component has no virtual getTooltip; TooltipWindow dispatches to TooltipClient*; allows per-node dynamic text | 2026-06-04 | Validated |
+| Tab content positioned in contentMinusKeyboard strip, not full content | Visual keyboard at bottom 50 px otherwise occludes lower portion of ADSR/filter displays | 2026-06-04 | Validated |
 
 ## Success Metrics
 
@@ -149,6 +163,11 @@ Users can load audio samples from local folders and play them polyphonically wit
 | Sample looping with crossfade | Loop points + crossfade audible | ✓ | Validated |
 | File browser loading | Load button opens native dialog | ✓ | Validated |
 | Drag-drop loading | Drop audio file onto editor | ✓ | Validated |
+| Visual keyboard shows MIDI note highlights | 2-octave C3–B4 piano lit on note-on | ✓ | Validated |
+| Editor chrome (title bar) consistent with v0.2 visual language | Flat buttons, larger alpha knob, preset controls always accessible | ✓ | Validated |
+| ADSR drag handles are discoverable | 5 px rest, 7 px hover/drag | ✓ | Validated |
+| ADSR nodes show tooltips on hover | "Attack", "Decay / Sustain", "Release" | ✓ | Validated |
+| ADSR nodes show live numeric readouts while dragging | "Atk X.XX s", "Dec X.XX s / Sus X.XX", "Rel X.XX s" | ✓ | Validated |
 
 ## Tech Stack / Tools
 
@@ -163,4 +182,4 @@ Users can load audio samples from local folders and play them polyphonically wit
 | Audio Formats | WAV, MP3 | JUCE built-in decoders |
 
 ---
-*Last updated: 2026-06-03 — v0.2.0 Interactive UI started; Phase 8 (Visual Keyboard Component) unified. All acceptance criteria passed.*
+*Last updated: 2026-06-04 — v0.2.0 Interactive UI: Phases 8, 9, 10 complete. Milestone ready for close-out.*
