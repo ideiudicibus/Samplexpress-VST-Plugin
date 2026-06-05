@@ -71,9 +71,9 @@ PLAN ──▶ APPLY ──▶ UNIFY
 
 ### Git State
 
-Last commit: d68b075 (fix(09-01): clamp spectrum height so it never overlaps the keyboard)
+Last commit: 06ed11f (feat(11-01): single-page landing site with process page and Pages deploy)
 Branch: main
-Uncommitted: .paul/ROADMAP.md, .paul/STATE.md, .paul/paul.json, .paul/PROJECT.md, .paul/phases/11-landing-page/11-01-PLAN.md (new), deleted build_standalone.bat, untracked build_kb.{bat,log}, build_vst3.{bat,log}, Absorb/, giada/, resources/Loop-Specs.md, resources/Screenshot 2026-06-03 125956.png
+Uncommitted: M CMakeLists.txt; untracked Absorb/, build_kb.{bat,log}, build_vst3.{bat,log}, giada/, rebuild_with_icon.bat, resources/Loop-Specs.md, resources/Screenshot 2026-06-03 125956.png, .paul/paul.json (not tracked)
 
 ## Session Continuity
 
