@@ -4,6 +4,8 @@ A JUCE-based sample player plugin inspired by Ableton Simpler's Classic Mode. Lo
 
 Current version: **v0.2.0** (Interactive UI).
 
+🌐 **[Website](https://ideiudicibus.github.io/Samplexpress-VST-Plugin/)** · [Process retrospective](docs/PROCESS-RETROSPECTIVE.md)
+
 ## Features
 
 - **Sample Loading** — Load WAV/MP3/AIFF via file browser or drag-and-drop onto the plugin window
@@ -34,7 +36,7 @@ Current version: **v0.2.0** (Interactive UI).
 ![Architecture diagram](docs/architecture.png)
 *Three-band layered view — audio thread (top), message thread (middle), UI thread (bottom). Cross-thread arrows show data and control flow. Source: [docs/architecture.svg](docs/architecture.svg) (text-editable, scales to any size).*
 
-See [docs/PROCESS-RETROSPECTIVE.md](docs/PROCESS-RETROSPECTIVE.md) for a retrospective on how this VST3 plugin was built — how the PAUL Framework structured the work, how features were described and turned into plans, and the test methodology actually run on this Windows host (versus what `CLAUDE.md` aspires to).
+See [docs/PROCESS-RETROSPECTIVE.md](docs/PROCESS-RETROSPECTIVE.md) for a retrospective on how this VST3 plugin was built — how the PAUL Framework structured the work, how features were described and turned into plans, and the test methodology actually run on this Windows host (versus what `CLAUDE.md` aspires to). A short version of the process diagram is also available on the [project website](https://ideiudicibus.github.io/Samplexpress-VST-Plugin/process.html).
 
 ## Build Requirements
 

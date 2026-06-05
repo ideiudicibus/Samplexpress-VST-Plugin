@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>How Samplexpress is built — Process</title>
+  <meta name="description" content="A short summary of the PAUL PLAN → APPLY → UNIFY loop used to develop Samplexpress, with a generated diagram of the cycle." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav class="site-nav">
+    <div class="site-nav-inner">
+      <a class="brand" href="index.html">Samplexpress<span class="dot">.</span></a>
+      <a class="navlink" href="index.html#features">Features</a>
+      <a class="navlink" href="index.html#screenshot">Screenshot</a>
+      <a class="navlink" href="index.html#build">Build</a>
+      <a class="navlink" href="index.html#download">Download</a>
+      <a class="navlink active" href="process.html" aria-current="page">Process</a>
+    </div>
+  </nav>
+
+  <main>
+    <section class="hero" style="padding-top: 64px;">
+      <span class="eyebrow">Process</span>
+      <h1>How Samplexpress is built.</h1>
+      <p class="tagline">
+        Every feature in this project came out of a small loop, not a single big plan.
+        The diagram below shows the cycle, and the paragraph under it summarises what
+        each step actually does and where the human sits in it.
+      </p>
+    </section>
+
+    <section>
+      <h2>The development loop</h2>
+      <div class="diagram-wrap">
+        <img src="process-diagram.svg" alt="Diagram of the PAUL development loop: PLAN produces a PLAN.md, APPLY executes the tasks and surfaces a human-verify checkpoint, UNIFY reconciles plan versus actual and updates project state. The cycle returns to PLAN, and a milestone archive step closes each release." />
+      </div>
+
+      <div class="process-summary">
+        <p>
+          The <strong>PLAN</strong> step writes a <code>PLAN.md</code> with YAML frontmatter, an explicit acceptance-criteria table, a checklist of tasks, and a boundaries section that names what must not change. <strong>APPLY</strong> runs those tasks in order, verifying each against the spec rather than memory, and logs every deviation under three buckets — auto-fixed, scope additions, deferred — so the audit trail survives across sessions. <strong>UNIFY</strong> reconciles plan versus actual: it folds accepted deviations into <code>STATE.md</code>, the project decision log, and the milestone archive, then closes the loop. The human sits in three places: mid-flight scope redirects (most of v0.2 was decided that way), visual verification at the end of a plan, and signing off acceptance criteria. The loop is honest about its limits — it does not pick APIs (every named JUCE method is re-checked against the local <code>JUCE/modules</code> source), and it does not replace the test methodology promised in <code>CLAUDE.md</code> (the achieved test surface on this Windows host is build-clean, launch-standalone, human-looks-at-it, and that gap is recorded in the full retrospective rather than hidden).
+        </p>
+      </div>
+
+      <p>
+        <a href="https://github.com/ideiudicibus/Samplexpress-VST-Plugin/blob/main/docs/PROCESS-RETROSPECTIVE.md">Read the full retrospective on GitHub →</a>
+      </p>
+
+      <a class="btn back-link" href="index.html">← Back to Samplexpress</a>
+    </section>
+  </main>
+
+  <footer>
+    <p>Samplexpress · A JUCE sample player · <a href="https://github.com/ideiudicibus/Samplexpress-VST-Plugin">GitHub</a> · <a href="process.html">How it's built</a></p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Samplexpress — A focused single-sample instrument</title>
+  <meta name="description" content="Samplexpress is a JUCE-based sample player inspired by Ableton Simpler's Classic Mode. Load a WAV or MP3, play it polyphonically across the keyboard with pitch-shifting, and shape the sound with three ADSR envelopes. Ships as a VST3 plugin and a standalone Windows executable." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav class="site-nav">
+    <div class="site-nav-inner">
+      <a class="brand" href="index.html">Samplexpress<span class="dot">.</span></a>
+      <a class="navlink" href="#features">Features</a>
+      <a class="navlink" href="#screenshot">Screenshot</a>
+      <a class="navlink" href="#build">Build</a>
+      <a class="navlink" href="#download">Download</a>
+      <a class="navlink" href="process.html">Process</a>
+    </div>
+  </nav>
+
+  <main>
+    <section class="hero" id="top">
+      <span class="eyebrow">v0.2.0 · Interactive UI</span>
+      <h1>A focused single-sample instrument.</h1>
+      <p class="tagline">
+        Load a WAV or MP3, play it polyphonically across your keyboard with pitch-shifting,
+        and shape the sound with three ADSR envelopes. Built with JUCE — ships as a VST3
+        plugin and a standalone Windows app.
+      </p>
+      <div class="cta-row">
+        <a class="btn primary" href="#download">Download v0.2</a>
+        <a class="btn" href="#features">See features</a>
+        <a class="btn" href="process.html">How it's built →</a>
+      </div>
+    </section>
+
+    <section id="features">
+      <h2>Features</h2>
+      <div class="feature-grid">
+        <div class="feature">
+          <h3>Sample loading</h3>
+          <p>WAV, MP3, and AIFF via file browser or drag-and-drop onto the plugin window, with a cyan border visual indicator on drag-over.</p>
+        </div>
+        <div class="feature">
+          <h3>Polyphonic playback</h3>
+          <p>16-voice polyphony with pitch-shifting across the full keyboard range, and a per-voice ~20&nbsp;ms release fade on note-off.</p>
+        </div>
+        <div class="feature">
+          <h3>Three ADSR envelopes</h3>
+          <p>Independent Volume, Filter Cutoff, and Pitch modulation envelopes with interactive drag-to-edit graphs, per-node tooltips, and live numeric readouts while dragging.</p>
+        </div>
+        <div class="feature">
+          <h3>Loop with crossfade</h3>
+          <p>Forward loop with cosine equal-power crossfade (0–500&nbsp;ms). Loop start, end, and crossfade length are draggable on the waveform; loop state is cached per voice for real-time safety.</p>
+        </div>
+        <div class="feature">
+          <h3>Low-pass filter</h3>
+          <p>State-variable TPT filter with cutoff and resonance controls, plus an interactive magnitude-response curve you drag directly.</p>
+        </div>
+        <div class="feature">
+          <h3>Spectrum analyzer</h3>
+          <p>Real-time FFT display (32 log-spaced bins, lock-free ring-buffer capture) visible behind every tab.</p>
+        </div>
+        <div class="feature">
+          <h3>Visual piano keyboard</h3>
+          <p>2-octave on-screen keyboard (C3–B4) that lights up in real time on MIDI note-on/off.</p>
+        </div>
+        <div class="feature">
+          <h3>Preset system</h3>
+          <p>Save, load, browse, and delete presets as XML files in <code>Documents/Samplexpress/Presets</code>; factory "Init" preset auto-created on first run.</p>
+        </div>
+        <div class="feature">
+          <h3>VST3 + Standalone</h3>
+          <p>Per-user VST3 install path — no admin required. Standalone <code>.exe</code> for auditioning without a DAW.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="screenshot">
+      <h2>Screenshot</h2>
+      <div class="screenshot-frame">
+        <img src="screenshot_v0.3_main.png" alt="Samplexpress v0.3 main UI — title bar, SAMPLE tab with orange waveform and loop markers, visual piano keyboard along the bottom." />
+      </div>
+    </section>
+
+    <section id="build">
+      <h2>Build</h2>
+      <p>Built with JUCE 8.0.12 and CMake + Ninja on Windows. See the project README for full setup details.</p>
+      <pre><code>cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release ^
+      -DCMAKE_PREFIX_PATH="%JUCE_FRAMEWORK%"
+cmake --build build --config Release</code></pre>
+      <p>The build produces:</p>
+      <ul>
+        <li><strong>Standalone:</strong> <code>build/Samplexpress_artefacts/Release/Standalone/Samplexpress.exe</code></li>
+        <li><strong>VST3:</strong> <code>build/Samplexpress_artefacts/Release/VST3/Samplexpress.vst3</code></li>
+      </ul>
+      <p>The VST3 is automatically copied to <code>%LOCALAPPDATA%\Programs\Common\VST3</code> during build — no admin privileges required.</p>
+    </section>
+
+    <section id="download">
+      <h2>Download</h2>
+      <p>Get the latest release on GitHub:</p>
+      <div class="cta-row">
+        <a class="btn primary" href="https://github.com/ideiudicibus/Samplexpress-VST-Plugin/releases">View releases</a>
+        <a class="btn" href="https://github.com/ideiudicibus/Samplexpress-VST-Plugin">View source</a>
+      </div>
+      <p style="margin-top: 24px;">Or clone the repository and build it yourself — see <a href="#build">Build</a> above.</p>
+    </section>
+  </main>
+
+  <footer>
+    <p>Samplexpress · A JUCE sample player · <a href="https://github.com/ideiudicibus/Samplexpress-VST-Plugin">GitHub</a> · <a href="process.html">How it's built</a></p>
+  </footer>
+</body>
+</html>

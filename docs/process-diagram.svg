@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" role="img" aria-labelledby="title desc">
+  <title id="title">The PAUL development loop: PLAN, APPLY, UNIFY</title>
+  <desc id="desc">A three-stage cycle showing how the PAUL framework structures VST3 plugin development. PLAN produces a PLAN.md with frontmatter, acceptance criteria, tasks, and boundaries. APPLY executes the plan, logs deviations, and surfaces a human-verify checkpoint. UNIFY reconciles plan versus actual and updates STATE.md, ROADMAP.md, and PROJECT.md. The cycle returns to PLAN, and a milestone archive step closes the loop.</desc>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#ff8c2a" />
+    </marker>
+    <linearGradient id="nodeGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2d2d2d" />
+      <stop offset="100%" stop-color="#262626" />
+    </linearGradient>
+    <filter id="soft" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur stdDeviation="1.5" />
+    </filter>
+  </defs>
+
+  <!-- Background panel -->
+  <rect x="0" y="0" width="960" height="520" fill="#1e1e1e" />
+
+  <!-- Title -->
+  <text x="40" y="46" fill="#e6e6e6" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" font-size="22" font-weight="700">The PAUL development loop</text>
+  <text x="40" y="70" fill="#b0b0b0" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" font-size="13">PLAN → APPLY → UNIFY — and back</text>
+
+  <!-- Three nodes -->
+  <g font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif">
+    <!-- PLAN node -->
+    <g>
+      <rect x="60" y="140" width="240" height="180" rx="8" fill="url(#nodeGrad)" stroke="#ff8c2a" stroke-width="2" />
+      <text x="80" y="174" fill="#ff8c2a" font-size="14" font-weight="700" letter-spacing="0.08em">PLAN</text>
+      <text x="80" y="206" fill="#e6e6e6" font-size="15" font-weight="600">Produce PLAN.md</text>
+      <text x="80" y="232" fill="#b0b0b0" font-size="12">YAML frontmatter</text>
+      <text x="80" y="250" fill="#b0b0b0" font-size="12">Acceptance criteria</text>
+      <text x="80" y="268" fill="#b0b0b0" font-size="12">Tasks + boundaries</text>
+      <text x="80" y="296" fill="#8a8a8a" font-size="11" font-style="italic">→ API verified against</text>
+      <text x="80" y="310" fill="#8a8a8a" font-size="11" font-style="italic">  local JUCE source</text>
+    </g>
+
+    <!-- APPLY node -->
+    <g>
+      <rect x="360" y="140" width="240" height="180" rx="8" fill="url(#nodeGrad)" stroke="#ff8c2a" stroke-width="2" />
+      <text x="380" y="174" fill="#ff8c2a" font-size="14" font-weight="700" letter-spacing="0.08em">APPLY</text>
+      <text x="380" y="206" fill="#e6e6e6" font-size="15" font-weight="600">Execute tasks</text>
+      <text x="380" y="232" fill="#b0b0b0" font-size="12">Run / Qualify / Fix</text>
+      <text x="380" y="250" fill="#b0b0b0" font-size="12">Log deviations</text>
+      <text x="380" y="268" fill="#b0b0b0" font-size="12">→ Auto-fixed / Scope-add /</text>
+      <text x="380" y="282" fill="#b0b0b0" font-size="12">  Deferred buckets</text>
+      <text x="380" y="310" fill="#8a8a8a" font-size="11" font-style="italic">↳ human-verify checkpoint</text>
+    </g>
+
+    <!-- UNIFY node -->
+    <g>
+      <rect x="660" y="140" width="240" height="180" rx="8" fill="url(#nodeGrad)" stroke="#ff8c2a" stroke-width="2" />
+      <text x="680" y="174" fill="#ff8c2a" font-size="14" font-weight="700" letter-spacing="0.08em">UNIFY</text>
+      <text x="680" y="206" fill="#e6e6e6" font-size="15" font-weight="600">Reconcile plan vs actual</text>
+      <text x="680" y="232" fill="#b0b0b0" font-size="12">Update STATE.md</text>
+      <text x="680" y="250" fill="#b0b0b0" font-size="12">Update ROADMAP archive</text>
+      <text x="680" y="268" fill="#b0b0b0" font-size="12">Append PROJECT.md decisions</text>
+      <text x="680" y="310" fill="#8a8a8a" font-size="11" font-style="italic">→ loop ready for next plan</text>
+    </g>
+  </g>
+
+  <!-- Forward arrows between nodes -->
+  <line x1="305" y1="230" x2="355" y2="230" stroke="#ff8c2a" stroke-width="2" marker-end="url(#arrow)" />
+  <line x1="605" y1="230" x2="655" y2="230" stroke="#ff8c2a" stroke-width="2" marker-end="url(#arrow)" />
+
+  <!-- Return arrow: UNIFY back to PLAN, curving below -->
+  <path d="M 780 330 Q 780 410 480 410 Q 180 410 180 330"
+        fill="none" stroke="#ff8c2a" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrow)" />
+  <text x="480" y="432" fill="#b0b0b0" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" font-size="12" text-anchor="middle">next plan</text>
+
+  <!-- Milestone archive: side badge -->
+  <g font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif">
+    <rect x="60" y="380" width="240" height="100" rx="8" fill="#262626" stroke="#3a3a3a" stroke-width="1" />
+    <text x="80" y="408" fill="#ff8c2a" font-size="12" font-weight="700" letter-spacing="0.08em">MILESTONE ARCHIVE</text>
+    <text x="80" y="432" fill="#e6e6e6" font-size="13">Close v0.X → archive ROADMAP</text>
+    <text x="80" y="450" fill="#b0b0b0" font-size="12">Record stats + key decisions</text>
+    <text x="80" y="468" fill="#b0b0b0" font-size="12">Carry deferred items to next</text>
+  </g>
+
+  <!-- Loop & decision points: side badge on right -->
+  <g font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif">
+    <rect x="660" y="380" width="240" height="100" rx="8" fill="#262626" stroke="#3a3a3a" stroke-width="1" />
+    <text x="680" y="408" fill="#ff8c2a" font-size="12" font-weight="700" letter-spacing="0.08em">HUMAN-IN-THE-LOOP</text>
+    <text x="680" y="432" fill="#e6e6e6" font-size="13">Mid-flight scope redirects</text>
+    <text x="680" y="450" fill="#b0b0b0" font-size="12">Visual verify at checkpoints</text>
+    <text x="680" y="468" fill="#b0b0b0" font-size="12">Acceptance-criteria sign-off</text>
+  </g>
+
+  <!-- Caption -->
+  <text x="480" y="510" fill="#8a8a8a" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" font-size="11" text-anchor="middle">Diagram of the development process described in docs/PROCESS-RETROSPECTIVE.md §3</text>
+</svg>

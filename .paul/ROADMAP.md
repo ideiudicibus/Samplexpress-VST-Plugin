@@ -6,13 +6,17 @@ Build a JUCE-based Classic Mode sample player — load a WAV/MP3, play it polyph
 
 ## Current Milestone
 
-**v0.2 Interactive UI** (v0.2.0)
+**v0.3 Project Website** (v0.3.0)
 Status: ✅ Complete
-Completed: 2026-06-04
+Completed: 2026-06-05
+
+| Phase | Name | Plans | Status |
+|-------|------|-------|--------|
+| 11 | Single-page Landing Site | 1/1 | Complete |
 
 ## Next Milestone
 
-Run `/paul:discuss-milestone` or `/paul:milestone` to define the next milestone.
+Run `/paul:discuss-milestone` or `/paul:milestone` to define the milestone after v0.3.
 
 ## Completed Milestones
 
@@ -43,6 +47,17 @@ See: `.paul/milestones/v0.2.0-ROADMAP.md` for full archive.
 
 </details>
 
+<details>
+<summary>v0.3 Project Website (v0.3.0) — 2026-06-05 (1 phase, 1 plan)</summary>
+
+| Phase | Name | Plans | Completed |
+|-------|------|-------|-----------|
+| 11 | Single-page Landing Site | 1/1 | 2026-06-05 |
+
+See: `.paul/milestones/v0.3.0-ROADMAP.md` for full archive.
+
+</details>
+
 ---
 *Roadmap created: 2026-05-24*
-*Last updated: 2026-06-04 — v0.2 archived; ready for next milestone.*
+*Last updated: 2026-06-05 — v0.3 archived; ready for next milestone.*

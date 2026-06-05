@@ -12,10 +12,10 @@ Users can load audio samples from local folders and play them polyphonically wit
 
 | Attribute | Value |
 |-----------|-------|
-| Type | Application (VST3 + Standalone) |
-| Version | 0.2.0 |
-| Status | Complete (v0.2 Interactive UI — all phases shipped) |
-| Last Updated | 2026-06-04 |
+| Type | Application (VST3 + Standalone) + Project Website |
+| Version | 0.3.0 |
+| Status | v0.3 Project Website complete; v0.2 Interactive UI shipped; awaiting next milestone |
+| Last Updated | 2026-06-05 |
 
 **Reference codebase mapped:** `giada` (monocasual/giada) — C++23 loop machine with atomic model swapping, real-time rendering, and FLTK UI. Best practices reused: sample looping with crossfade (cosine crossfade at loop boundary), real-time thread safety via std::atomic parameter reads.
 
@@ -60,6 +60,10 @@ Users can load audio samples from local folders and play them polyphonically wit
 - [x] Per-node ADSR tooltips ("Attack", "Decay / Sustain", "Release") — Phase 10
 - [x] Live numeric readouts while dragging ADSR nodes — Phase 10
 - [x] Tab content sized to content-minus-keyboard strip (no longer hidden by visual keyboard) — Phase 10
+- [x] Project landing site (single-page, plain HTML+CSS, GitHub Pages) — Phase 11
+- [x] Generated SVG diagram of the PAUL PLAN→APPLY→UNIFY cycle — Phase 11
+- [x] Process page summarising docs/PROCESS-RETROSPECTIVE.md with GitHub link to full MD — Phase 11
+- [x] GitHub Pages deploy workflow (official actions/deploy-pages family) — Phase 11
 
 ### Active (In Progress)
 
@@ -137,6 +141,7 @@ Users can load audio samples from local folders and play them polyphonically wit
 | VCF before VCA signal chain | Standard subtractive synth; resonance rings through volume release | 2026-05-24 | Active |
 | Atomic flag for Play button | Thread-safe UI→audio communication via std::atomic in processBlock | 2026-05-24 | Active |
 | Per-user VST3 path | %LOCALAPPDATA% avoids admin elevation requirement | 2026-05-24 | Active |
+| Process page = summary, not full copy of MD | The MD is the source of truth; the page is a 1-screen overview that links out | 2026-06-05 | Validated |
 | Cubic interpolation for pitch-shifting | Replace linear; giada uses libsamplerate | 2026-05-28 | Validated |
 | Sample looping with crossfade | Core of new phase; giada real-time loop rendering pattern | 2026-05-28 | Validated |
 | Lock-free queue for UI-audio communication | giada `moodycamel::ConcurrentQueue` pattern | 2026-05-28 | Deferred to v0.2 |
@@ -168,6 +173,8 @@ Users can load audio samples from local folders and play them polyphonically wit
 | ADSR drag handles are discoverable | 5 px rest, 7 px hover/drag | ✓ | Validated |
 | ADSR nodes show tooltips on hover | "Attack", "Decay / Sustain", "Release" | ✓ | Validated |
 | ADSR nodes show live numeric readouts while dragging | "Atk X.XX s", "Dec X.XX s / Sus X.XX", "Rel X.XX s" | ✓ | Validated |
+| Project landing site live at GitHub Pages | https://ideiudicibus.github.io/Samplexpress-VST-Plugin/ | ✓ | Validated |
+| Process page renders diagram + summary + full-retrospective link | docs/process.html | ✓ | Validated |
 
 ## Tech Stack / Tools
 
@@ -182,4 +189,4 @@ Users can load audio samples from local folders and play them polyphonically wit
 | Audio Formats | WAV, MP3 | JUCE built-in decoders |
 
 ---
-*Last updated: 2026-06-04 — v0.2.0 Interactive UI: Phases 8, 9, 10 complete. Milestone ready for close-out.*
+*Last updated: 2026-06-05 — v0.3 Project Website complete: Phase 11 (Single-page Landing Site) shipped, milestone archived.*
