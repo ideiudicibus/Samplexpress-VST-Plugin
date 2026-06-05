@@ -36,6 +36,12 @@ target_sources(Samplexpress
         Source/TabBar.cpp
 )
 
+# App icon — multi-resolution .ico (16/24/32/48/64/128/256 px)
+# Used by both the Standalone .exe and the VST3 .vst3 on Windows.
+set_target_properties(Samplexpress PROPERTIES
+    JUCE_ICON_FILE "${CMAKE_SOURCE_DIR}/resources/icon.ico"
+)
+
 target_compile_definitions(Samplexpress
     PUBLIC
         JUCE_WEB_BROWSER=0

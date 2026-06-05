@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <!--
+    Samplexpress app icon — "SX" monogram
+    Dark background matches the editor theme (#121214)
+    Cyan accent matches the spectrum/filter highlight colour (#00CED1)
+    Designed to read cleanly at 16x16 (favicon size)
+  -->
+  <defs>
+    <style>
+      .bg   { fill: #121214; }
+      .edge { fill: none; stroke: #00CED1; stroke-width: 6; stroke-linejoin: round; }
+      .glyph { fill: #FFFFFF; font-family: -apple-system, 'Segoe UI', 'Inter', 'Roboto', sans-serif;
+               font-weight: 800; letter-spacing: -8px; }
+      .dot  { fill: #00CED1; }
+    </style>
+  </defs>
+
+  <!-- Rounded background tile (slight rounding reads better than square at small sizes) -->
+  <rect class="bg" x="0" y="0" width="256" height="256" rx="40" ry="40"/>
+
+  <!-- Subtle cyan edge frame, inset -->
+  <rect class="edge" x="8" y="8" width="240" height="240" rx="32" ry="32" opacity="0.45"/>
+
+  <!-- "SX" monogram, centred. Tuned manually for visual balance. -->
+  <text x="128" y="172" text-anchor="middle" class="glyph" font-size="172">SX</text>
+
+  <!-- Cyan dot accent — the period, evoking "playhead" / "sample" -->
+  <circle class="dot" cx="208" cy="180" r="9"/>
+</svg>
